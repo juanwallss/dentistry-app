@@ -1,8 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
-
+import { configureStore } from '@reduxjs/toolkit'
+import patientSlice from './patient-slice'
+import appointmentSlice from './appointment-slice'
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-  },
-});
+	reducer: {
+		patient: patientSlice.reducer,
+		appointment: appointmentSlice.reducer,
+	},
+})
