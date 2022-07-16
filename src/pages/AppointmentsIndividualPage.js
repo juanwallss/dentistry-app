@@ -1,15 +1,35 @@
 import * as React from 'react'
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
-import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add'
 import { appointmentActions } from '../app/appointment-slice'
+import {
+	Box,
+	TextField,
+	Fab,
+	Button,
+	Modal,
+	Typography,
+	InputLabel,
+	MenuItem,
+	FormControl,
+	Select,
+	Container,
+} from '@mui/material'
+
 export default function AppointmentsIndividualPage(props) {
 	const [currentItem, setCurrentItem] = useState({})
+	const [patient, setPatient] = useState({})
 	const dispatch = useDispatch()
+	let patients = useSelector((state) => state.patient.patients)
+	const handleChange = (event) => {
+		setCurrentItem({
+			...currentItem,
+			patient: event.target.value.name,
+		})
+		setPatient(event.target.value)
+	}
 	const addAppointment = (item) => {
 		dispatch(appointmentActions.addAppointment(item))
 	}
@@ -24,25 +44,31 @@ export default function AppointmentsIndividualPage(props) {
 				noValidate
 				autoComplete="off"
 			>
-				<div>
+				<Container>
+					<InputLabel id="demo-simple-select-label">Paciente</InputLabel>
+					<Select
+						labelId="demo-simple-select-label"
+						id="demo-simple-select"
+						value={patient}
+						label="Paciente"
+						onChange={handleChange}
+						sx={{ width: '25ch' }}
+					>
+						{patients.map((item) => (
+							<MenuItem key={item.id} value={item}>
+								{item.name}
+							</MenuItem>
+						))}
+					</Select>
+
 					<TextField
 						required
 						id="standard-required"
-						label="Nombre y Apellido"
+						label="Procedimiento"
 						variant="standard"
-						placeholder="Nombre y Apellido"
+						placeholder="Procedimiento"
 						onChange={(e) =>
-							setCurrentItem({ ...currentItem, name: e.target.value })
-						}
-					/>
-					<TextField
-						required
-						id="standard-required"
-						label="Teléfono"
-						variant="standard"
-						placeholder="Teléfono"
-						onChange={(e) =>
-							setCurrentItem({ ...currentItem, phone: e.target.value })
+							setCurrentItem({ ...currentItem, procedure: e.target.value })
 						}
 					/>
 					<TextField
@@ -56,12 +82,10 @@ export default function AppointmentsIndividualPage(props) {
 						}
 					/>
 
-					<Link to={`/patients`}>
+					<Link to={`/appointments`}>
 						<Fab
 							onClick={() => {
-								console.log(currentItem)
 								addAppointment(currentItem)
-								props.history.push('/patients')
 							}}
 							size="small"
 							color="primary"
@@ -70,7 +94,7 @@ export default function AppointmentsIndividualPage(props) {
 							<AddIcon />
 						</Fab>
 					</Link>
-				</div>
+				</Container>
 			</Box>
 		</div>
 	)

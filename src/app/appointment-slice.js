@@ -10,6 +10,7 @@ const appointmentSlice = createSlice({
 		addAppointment: (state, action) => {
 			const newId = state.id + 1
 			state.id++
+
 			const newAppointment = {
 				id: newId,
 				...action.payload,

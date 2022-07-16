@@ -15,8 +15,8 @@ function App() {
 						<HomePage />
 					</Route>
 					<Route path="/calendar">
-						<h1>Aqui va el calendario</h1>
-						{/* <CalendarPage /> */}
+						{/* <h1>Aqui va el calendario</h1> */}
+						<CalendarPage />
 					</Route>
 					<Route path="/appointments">
 						{/* <h1>Lista de Citas</h1> */}
