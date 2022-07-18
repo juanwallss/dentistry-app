@@ -4,6 +4,7 @@ import { NavLink, Route } from 'react-router-dom'
 import EnhancedTable from '../components/Table'
 import AppointmentsIndividualPage from './AppointmentsIndividualPage'
 import { Modal, Typography, Box, Container, Button } from '@mui/material'
+import { appointmentActions } from '../app/appointment-slice'
 
 const style = {
 	position: 'absolute',
@@ -16,43 +17,31 @@ const style = {
 	boxShadow: 24,
 	p: 4,
 }
-const dummy = [
-	{
-		id: 1,
-		patient: 'John Doe',
-		date: '2020-03-05',
-		doctor: 'Angelis Cepeda',
-		age: '30',
-		procedure: 'Valoracion',
-	},
-	{
-		id: 2,
-		patient: 'Jane Doe',
-		age: '25',
-		doctor: 'Angelis Cepeda',
-		date: '2020-01-01',
-		procedure: 'Limpieza y ofrecerle un puente',
-	},
-	{
-		id: 3,
-		patient: 'Frank Doe',
-		date: '2023-01-01',
-		age: '30',
-		doctor: 'Angelis Cepeda',
-		procedure: 'Cambio de resinas y presupuesto para cambio de dientes',
-	},
-]
-
 export default function AppointmentsPage() {
+	const dispatch = useDispatch()
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
+	const [appointments1, setAppointments1] = useState([])
+
 	let appointments = useSelector((state) => state.appointment.appointments)
 	let patients = useSelector((state) => state.patient.patients)
 	useEffect(() => {
 		setData(appointments)
 		console.log(appointments)
 	}, [appointments])
+
+	// useEffect(() => {
+	// 	fetch(
+	// 		'https://dentistry-app-614cd-default-rtdb.firebaseio.com/appointments.json'
+	// 	)
+	// 		.then((res) => res.json())
+	// 		.then((data) => setData(Object.values(data)))
+
+	// 	dispatch(appointmentActions.replaceAppointments(data))
+	// }, [])
+	// console.log(appointments1)
+
 	return (
 		<div>
 			<Container sx={{ marginTop: '10px ' }}>
@@ -72,7 +61,12 @@ export default function AppointmentsPage() {
 					}}
 				/>
 				<Button sx={{ marginTop: '10px' }} variant="contained">
-					<NavLink to={`/appointments/new`}>Agendar Cita</NavLink>
+					<NavLink
+						style={{ textDecoration: 'none', color: 'white' }}
+						to={`/appointments/new`}
+					>
+						Agendar Cita
+					</NavLink>
 				</Button>
 				<Route path="/appointments/:id">
 					<AppointmentsIndividualPage />
@@ -85,7 +79,9 @@ export default function AppointmentsPage() {
 				>
 					<Box sx={style}>
 						<Typography id="modal-modal-title" variant="h5" component="h2">
-							{modalInfo.doctor ? modalInfo.doctor : 'No hay doctor asignado'}
+							{modalInfo.doctor
+								? `C.D. ${modalInfo.doctor}`
+								: 'No hay doctor asignado'}
 						</Typography>
 						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
 							Paciente: {modalInfo.patient}

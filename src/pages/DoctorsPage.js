@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { NavLink, Route } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { NavLink, Route } from 'react-router-dom'
 import EnhancedTable from '../components/Table'
-import PatientsIndividualPage from './PatientsIndividualPage'
-import { patientActions } from '../app/patient-slice'
-import { Button, Modal, Typography, Box, Container } from '@mui/material'
+import { Modal, Typography, Box, Container, Button } from '@mui/material'
+import DoctorsIndividualPage from './DoctorsIndividualPage'
 const style = {
 	position: 'absolute',
 	top: '50%',
@@ -16,36 +15,57 @@ const style = {
 	boxShadow: 24,
 	p: 4,
 }
-export default function AppointmentsPage() {
+const dummy = [
+	{
+		id: 1,
+		patient: 'John Doe',
+		date: '2020-03-05',
+		doctor: 'Angelis Cepeda',
+		age: '30',
+		procedure: 'Valoracion',
+	},
+	{
+		id: 2,
+		patient: 'Jane Doe',
+		age: '25',
+		doctor: 'Angelis Cepeda',
+		date: '2020-01-01',
+		procedure: 'Limpieza y ofrecerle un puente',
+	},
+	{
+		id: 3,
+		patient: 'Frank Doe',
+		date: '2023-01-01',
+		age: '30',
+		doctor: 'Angelis Cepeda',
+		procedure: 'Cambio de resinas y presupuesto para cambio de dientes',
+	},
+]
+
+export default function DoctorsPage() {
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
-	let patients = useSelector((state) => state.patient.patients)
-
-	const dispatch = useDispatch()
-	const removePatient = (id) => {
-		dispatch(patientActions.deletePatient(id))
-	}
+	let doctors = useSelector((state) => state.doctor.doctors)
 	useEffect(() => {
-		setData(patients)
-		console.log(patients)
-	}, [patients])
-	// useEffect(() => {
-	// 	fetch('https://jsonplaceholder.typicode.com/users')
-	// 		.then((res) => res.json())
-	// 		.then((data) => setData(data))
-	// }, [data])
+		setData(doctors)
+		console.log(doctors)
+	}, [doctors])
 	return (
 		<div>
 			<Container sx={{ marginTop: '10px ' }}>
 				<EnhancedTable
-					title={'Pacientes'}
+					title={'Doctores'}
 					columns={[
-						{ id: 'id', label: '# de Folio', minWidth: 50 },
+						{ id: 'id', label: 'ID', minWidth: 50 },
 						{ id: 'name', label: 'Nombre', minWidth: 170 },
-						{ id: 'phone', label: 'Telefono', minWidth: 170 },
-						{ id: 'age', label: 'Edad', minWidth: 170 },
-
+						{
+							id: 'professional_id',
+							label: 'Cédula Profesional',
+							minWidth: 170,
+						},
+						{ id: 'degree', label: 'Especialidad', minWidth: 170 },
+						{ id: 'phone', label: 'Teléfono', minWidth: 170 },
 						{ id: 'email', label: 'Correo Electronico', minWidth: 170 },
 					]}
 					rows={data}
@@ -58,13 +78,13 @@ export default function AppointmentsPage() {
 				<Button sx={{ marginTop: '10px' }} variant="contained">
 					<NavLink
 						style={{ textDecoration: 'none', color: 'white' }}
-						to={`/patients/new`}
+						to={`/doctors/new`}
 					>
-						Agregar Paciente
+						Nuevo Doctor
 					</NavLink>
 				</Button>
-				<Route path="/patients/:id">
-					<PatientsIndividualPage />
+				<Route path="/doctors/:id">
+					<DoctorsIndividualPage />
 				</Route>
 				<Modal
 					open={openModal}
@@ -74,26 +94,14 @@ export default function AppointmentsPage() {
 				>
 					<Box sx={style}>
 						<Typography id="modal-modal-title" variant="h5" component="h2">
-							Nombre: {modalInfo.name}
+							{`Nombre ${modalInfo.name}`}
 						</Typography>
 						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Telefono: {modalInfo.phone}
+							Cedula Profesional: {modalInfo.professional_id}
 						</Typography>
 						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Edad: {modalInfo.age}
+							Especialidad: {modalInfo.degree}
 						</Typography>
-						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Correo Electronico: {modalInfo.email}
-						</Typography>
-						<Button
-							onClick={() => {
-								removePatient(modalInfo.id)
-								setOpenModal(false)
-							}}
-							variant="contained"
-						>
-							Eliminar
-						</Button>
 					</Box>
 				</Modal>
 			</Container>

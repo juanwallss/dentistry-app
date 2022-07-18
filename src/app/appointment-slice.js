@@ -22,6 +22,9 @@ const appointmentSlice = createSlice({
 				(appointment) => appointment.id !== action.payload
 			)
 		},
+		replaceAppointments: (state, action) => {
+			state.appointments = action.payload
+		},
 	},
 })
 

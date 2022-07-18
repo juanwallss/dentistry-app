@@ -2,12 +2,31 @@ import * as React from 'react'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
+import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
+import { styled } from '@mui/material/styles'
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+	[`&.${tableCellClasses.head}`]: {
+		backgroundColor: theme.palette.common.black,
+		color: theme.palette.common.white,
+	},
+	// [`&.${tableCellClasses.body}`]: {
+	// 	fontSize: 14,
+	// },
+}))
 
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+	'&:nth-of-type(odd)': {
+		backgroundColor: theme.palette.action.hover,
+	},
+	// hide last border
+	'&:last-child td, &:last-child th': {
+		border: 0,
+	},
+}))
 export default function StickyHeadTable(props) {
 	const [page, setPage] = React.useState(0)
 	const [rowsPerPage, setRowsPerPage] = React.useState(10)
@@ -29,13 +48,13 @@ export default function StickyHeadTable(props) {
 					<TableHead>
 						<TableRow>
 							{columns.map((column) => (
-								<TableCell
+								<StyledTableCell
 									key={column.id}
 									align={column.align}
 									style={{ minWidth: column.minWidth }}
 								>
 									{column.label}
-								</TableCell>
+								</StyledTableCell>
 							))}
 						</TableRow>
 					</TableHead>
@@ -44,7 +63,7 @@ export default function StickyHeadTable(props) {
 							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 							.map((row) => {
 								return (
-									<TableRow
+									<StyledTableRow
 										hover
 										role="checkbox"
 										tabIndex={-1}
@@ -65,7 +84,7 @@ export default function StickyHeadTable(props) {
 												</TableCell>
 											)
 										})}
-									</TableRow>
+									</StyledTableRow>
 								)
 							})}
 					</TableBody>

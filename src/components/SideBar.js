@@ -19,6 +19,7 @@ const pages = [
 	{ name: 'Calendario', link: '/calendar' },
 	{ name: 'Citas', link: '/appointments' },
 	{ name: 'Pacientes', link: '/patients' },
+	{ name: 'Doctores', link: '/doctors' },
 ]
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
@@ -121,7 +122,10 @@ const SideBar = () => {
 					</Typography>
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
 						{pages.map((page) => (
-							<NavLink to={page.link}>
+							<NavLink
+								style={{ textDecoration: 'none', color: 'white' }}
+								to={page.link}
+							>
 								<Button
 									key={page.name}
 									onClick={handleCloseNavMenu}

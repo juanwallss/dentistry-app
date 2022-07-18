@@ -6,12 +6,12 @@ import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add'
-import { patientActions } from '../app/patient-slice'
-export default function PatientsIndividualPage(props) {
+import { doctorActions } from '../app/doctor-slice'
+export default function DoctorsIndividualPage(props) {
 	const [currentItem, setCurrentItem] = useState({})
 	const dispatch = useDispatch()
-	const addPatient = (item) => {
-		dispatch(patientActions.addPatient(item))
+	const addDoctor = (item) => {
+		dispatch(doctorActions.addDoctor(item))
 	}
 	return (
 		<div>
@@ -62,25 +62,38 @@ export default function PatientsIndividualPage(props) {
 							setCurrentItem({ ...currentItem, email: e.target.value })
 						}
 					/>
+
+					<TextField
+						required
+						id="standard-required"
+						label="Especialidad"
+						variant="standard"
+						placeholder="Correo Electrónico"
+						onChange={(e) =>
+							setCurrentItem({ ...currentItem, degree: e.target.value })
+						}
+					/>
 					<TextField
 						required
 						id="standard-number"
-						label="Edad"
+						label="Cédula Profesional"
 						type="number"
 						InputLabelProps={{
 							shrink: true,
 						}}
 						variant="standard"
 						onChange={(e) =>
-							setCurrentItem({ ...currentItem, age: e.target.value })
+							setCurrentItem({
+								...currentItem,
+								professional_id: e.target.value,
+							})
 						}
 					/>
-					<Link to={`/patients`}>
+					<Link to={`/doctors`}>
 						<Fab
 							onClick={() => {
 								console.log(currentItem)
-								addPatient(currentItem)
-								props.history.push('/patients')
+								addDoctor(currentItem)
 							}}
 							size="small"
 							color="primary"
