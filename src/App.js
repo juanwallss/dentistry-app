@@ -1,4 +1,5 @@
 import './App.css'
+import React, { useState, useEffect } from 'react'
 import SideBar from './components/SideBar'
 import HomePage from './pages/HomePage'
 import AppointmentsPage from './pages/AppointmentsPage'
@@ -9,7 +10,18 @@ import { theme } from './theme'
 import { ThemeProvider } from '@mui/material/styles'
 import ScopedCssBaseline from '@mui/material/ScopedCssBaseline'
 import { Router, Route, Switch, Redirect } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { getPatients } from './store/patient-slice'
+import { fetchAppointments } from './store/appointment-slice'
+
 function App() {
+	const dispatch = useDispatch()
+	const patients = useSelector((state) => state.patient.patients)
+	const appointments = useSelector((state) => state.appointment.appointments)
+	useEffect(() => {
+		dispatch(getPatients())
+		dispatch(fetchAppointments())
+	}, [])
 	return (
 		<div className="App">
 			<ThemeProvider theme={theme}>

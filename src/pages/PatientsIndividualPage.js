@@ -1,17 +1,32 @@
 import * as React from 'react'
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
-import Fab from '@mui/material/Fab'
+import Swal from 'sweetalert2'
+
 import AddIcon from '@mui/icons-material/Add'
-import { patientActions } from '../app/patient-slice'
+import { Box, TextField, Fab } from '@mui/material'
+
+import { patientActions } from '../store/patient-slice'
+
 export default function PatientsIndividualPage(props) {
 	const [currentItem, setCurrentItem] = useState({})
 	const dispatch = useDispatch()
 	const addPatient = (item) => {
 		dispatch(patientActions.addPatient(item))
+	}
+
+	const sendPatient = async (item) => {
+		const response = await fetch(
+			'https://dentistry-app-614cd-default-rtdb.firebaseio.com/patients.json',
+			{
+				method: 'POST',
+				body: JSON.stringify(item),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+		)
 	}
 	return (
 		<div>
@@ -80,7 +95,12 @@ export default function PatientsIndividualPage(props) {
 							onClick={() => {
 								console.log(currentItem)
 								addPatient(currentItem)
-								props.history.push('/patients')
+								sendPatient(currentItem)
+								Swal.fire({
+									title: 'Paciente Agregado',
+									text: 'Se ha agregado el paciente correctamente',
+									icon: 'success',
+								})
 							}}
 							size="small"
 							color="primary"

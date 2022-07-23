@@ -3,19 +3,19 @@ import { NavLink, Route } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import EnhancedTable from '../components/Table'
 import PatientsIndividualPage from './PatientsIndividualPage'
-import { patientActions } from '../app/patient-slice'
-import { Button, Modal, Typography, Box, Container } from '@mui/material'
-const style = {
-	position: 'absolute',
-	top: '50%',
-	left: '50%',
-	transform: 'translate(-50%, -50%)',
-	width: 400,
-	bgcolor: '#e3f2fd',
-	border: '2px solid #000',
-	boxShadow: 24,
-	p: 4,
-}
+import { patientActions } from '../store/patient-slice'
+import Swal from 'sweetalert2'
+import {
+	Button,
+	Modal,
+	Typography,
+	Box,
+	Container,
+	Card,
+	CardActions,
+	CardContent,
+} from '@mui/material'
+import { style } from '../theme/styles'
 export default function AppointmentsPage() {
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
@@ -37,7 +37,7 @@ export default function AppointmentsPage() {
 	// }, [data])
 	return (
 		<div>
-			<Container sx={{ marginTop: '10px ' }}>
+			<Container sx={{ marginTop: '20px ' }}>
 				<EnhancedTable
 					title={'Pacientes'}
 					columns={[
@@ -73,27 +73,39 @@ export default function AppointmentsPage() {
 					aria-describedby="simple-modal-description"
 				>
 					<Box sx={style}>
-						<Typography id="modal-modal-title" variant="h5" component="h2">
-							Nombre: {modalInfo.name}
-						</Typography>
-						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Telefono: {modalInfo.phone}
-						</Typography>
-						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Edad: {modalInfo.age}
-						</Typography>
-						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Correo Electronico: {modalInfo.email}
-						</Typography>
-						<Button
-							onClick={() => {
-								removePatient(modalInfo.id)
-								setOpenModal(false)
-							}}
-							variant="contained"
-						>
-							Eliminar
-						</Button>
+						<Card>
+							<CardContent>
+								<Typography id="modal-modal-title" variant="h5" component="h2">
+									Nombre: {modalInfo.name}
+								</Typography>
+								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+									Telefono: {modalInfo.phone}
+								</Typography>
+								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+									Edad: {modalInfo.age}
+								</Typography>
+								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+									Correo Electronico: {modalInfo.email}
+								</Typography>
+								<CardActions>
+									<Button
+										style={{ marginTop: '10px' }}
+										onClick={() => {
+											removePatient(modalInfo.id)
+											setOpenModal(false)
+											Swal.fire({
+												title: 'Se elimino el paciente',
+												text: 'Se ha eliminado el paciente correctamente',
+												icon: 'success',
+											})
+										}}
+										variant="outlined"
+									>
+										Eliminar
+									</Button>
+								</CardActions>
+							</CardContent>
+						</Card>
 					</Box>
 				</Modal>
 			</Container>

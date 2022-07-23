@@ -3,32 +3,34 @@ import { useSelector, useDispatch } from 'react-redux'
 import { NavLink, Route } from 'react-router-dom'
 import EnhancedTable from '../components/Table'
 import AppointmentsIndividualPage from './AppointmentsIndividualPage'
-import { Modal, Typography, Box, Container, Button } from '@mui/material'
-import { appointmentActions } from '../app/appointment-slice'
-
-const style = {
-	position: 'absolute',
-	top: '50%',
-	left: '50%',
-	transform: 'translate(-50%, -50%)',
-	width: 400,
-	bgcolor: '#e3f2fd',
-	border: '2px solid #000',
-	boxShadow: 24,
-	p: 4,
-}
+import Swal from 'sweetalert2'
+import {
+	Modal,
+	Typography,
+	Box,
+	Container,
+	Button,
+	Card,
+	CardContent,
+	CardActions,
+} from '@mui/material'
+import { appointmentActions } from '../store/appointment-slice'
+import { patientActions } from '../store/patient-slice'
+import { style } from '../theme/styles'
 export default function AppointmentsPage() {
 	const dispatch = useDispatch()
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
 	const [appointments1, setAppointments1] = useState([])
+	const [patientsInfo, setPatientsInfo] = useState(null)
 
 	let appointments = useSelector((state) => state.appointment.appointments)
 	let patients = useSelector((state) => state.patient.patients)
 	useEffect(() => {
+		// dispatch(appointmentActions.fetchAppointments())
 		setData(appointments)
-		console.log(appointments)
+		// console.log(Object.values(appointments))
 	}, [appointments])
 
 	// useEffect(() => {
@@ -41,10 +43,12 @@ export default function AppointmentsPage() {
 	// 	dispatch(appointmentActions.replaceAppointments(data))
 	// }, [])
 	// console.log(appointments1)
-
+	const removeAppointment = (id) => {
+		dispatch(appointmentActions.deleteAppointment(id))
+	}
 	return (
 		<div>
-			<Container sx={{ marginTop: '10px ' }}>
+			<Container sx={{ marginTop: '20px ' }}>
 				<EnhancedTable
 					title={'Lista de Citas'}
 					columns={[
@@ -78,22 +82,60 @@ export default function AppointmentsPage() {
 					aria-describedby="simple-modal-description"
 				>
 					<Box sx={style}>
-						<Typography id="modal-modal-title" variant="h5" component="h2">
-							{modalInfo.doctor
-								? `C.D. ${modalInfo.doctor}`
-								: 'No hay doctor asignado'}
-						</Typography>
-						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Paciente: {modalInfo.patient}
-						</Typography>
-						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Fecha: {modalInfo.date}
-						</Typography>
-						{modalInfo.procedure && (
-							<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-								Procedimiento: {modalInfo.procedure}
-							</Typography>
-						)}
+						<Card>
+							<CardContent>
+								<Typography id="modal-modal-title" variant="h5" component="h2">
+									{modalInfo.doctor
+										? `C.D. ${modalInfo.doctor}`
+										: 'No hay doctor asignado'}
+								</Typography>
+								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+									Paciente: {modalInfo.patient}
+								</Typography>
+								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+									Fecha: {modalInfo.date}
+								</Typography>
+								{modalInfo.procedure && (
+									<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+										Procedimiento: {modalInfo.procedure}
+									</Typography>
+								)}
+							</CardContent>
+							<CardActions>
+								<Button
+									color="success"
+									sx={{ marginTop: '10px' }}
+									variant="outlined"
+									onClick={() => {
+										let patientId = modalInfo.patient_id
+										let patient = patients.find(
+											(patient) => patient.id === patientId
+										)
+										console.log(patient)
+										window.open(
+											`https://wa.me/+521${patient.phone}/?text=Hola,%20${patient.name}!,%20este%20es%20un%20recordatorio%20para%20tu%20cita%20con%20el%20doctor%20${modalInfo.doctor}%20en%20la%20fecha%20${modalInfo.date}%20para%20tu%20procedimiento%20de:%20${modalInfo.procedure}.`
+										)
+									}}
+								>
+									WhatsApp
+								</Button>
+								<Button
+									style={{ marginTop: '10px' }}
+									onClick={() => {
+										removeAppointment(modalInfo.id)
+										setOpenModal(false)
+										Swal.fire({
+											title: 'Se elimino la cita',
+											text: 'Se ha eliminado la cita correctamente',
+											icon: 'success',
+										})
+									}}
+									variant="outlined"
+								>
+									Eliminar
+								</Button>
+							</CardActions>
+						</Card>
 					</Box>
 				</Modal>
 			</Container>

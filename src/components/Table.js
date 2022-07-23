@@ -13,9 +13,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 		backgroundColor: theme.palette.common.black,
 		color: theme.palette.common.white,
 	},
-	// [`&.${tableCellClasses.body}`]: {
-	// 	fontSize: 14,
-	// },
+	[`&.${tableCellClasses.body}`]: {
+		fontSize: 14,
+	},
 }))
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -59,41 +59,39 @@ export default function StickyHeadTable(props) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{rows
-							.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-							.map((row) => {
-								return (
-									<StyledTableRow
-										hover
-										role="checkbox"
-										tabIndex={-1}
-										onClick={() => {
-											if (handleClick) {
-												handleClick(row)
-											}
-										}}
-										key={row.code}
-									>
-										{columns.map((column) => {
-											const value = row[column.id]
-											return (
-												<TableCell key={column.id} align={column.align}>
-													{column.format && typeof value === 'number'
-														? column.format(value)
-														: value}
-												</TableCell>
-											)
-										})}
-									</StyledTableRow>
-								)
-							})}
+						{rows?.map((row) => {
+							return (
+								<StyledTableRow
+									hover
+									role="checkbox"
+									tabIndex={-1}
+									onClick={() => {
+										if (handleClick) {
+											handleClick(row)
+										}
+									}}
+									key={row.code}
+								>
+									{columns?.map((column) => {
+										const value = row[column.id]
+										return (
+											<TableCell key={column.id} align={column.align}>
+												{column.format && typeof value === 'number'
+													? column.format(value)
+													: value}
+											</TableCell>
+										)
+									})}
+								</StyledTableRow>
+							)
+						})}
 					</TableBody>
 				</Table>
 			</TableContainer>
 			<TablePagination
 				rowsPerPageOptions={[10, 25, 100]}
 				component="div"
-				count={rows.length}
+				count={rows?.length}
 				rowsPerPage={rowsPerPage}
 				page={page}
 				onPageChange={handleChangePage}

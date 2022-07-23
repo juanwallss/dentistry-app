@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Swal from 'sweetalert2'
 import { Link } from 'react-router-dom'
 import AddIcon from '@mui/icons-material/Add'
-import { appointmentActions } from '../app/appointment-slice'
+import { appointmentActions } from '../store/appointment-slice'
 import {
 	Box,
 	TextField,
@@ -16,6 +17,9 @@ import {
 	FormControl,
 	Select,
 	Container,
+	Card,
+	CardContent,
+	Paper,
 } from '@mui/material'
 
 export default function AppointmentsIndividualPage(props) {
@@ -31,19 +35,18 @@ export default function AppointmentsIndividualPage(props) {
 		dispatch(appointmentActions.addAppointment(item))
 	}
 
-	// const sendRequest = async () => {
-	// 	const response = await fetch(
-	// 		'https://dentistry-app-614cd-default-rtdb.firebaseio.com/appointments.json',
-	// 		{
-	// 			method: 'POST',
-	// 			body: JSON.stringify(currentItem),
-	// 		}
-	// 	)
-	// 	if (!response.ok) {
-	// 		throw new Error('Could not fetch data')
-	// 	}
-	// 	addAppointment(currentItem)
-	// }
+	const sendAppointment = async (item) => {
+		const response = await fetch(
+			'https://dentistry-app-614cd-default-rtdb.firebaseio.com/appointments.json',
+			{
+				method: 'POST',
+				body: JSON.stringify(item),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+		)
+	}
 
 	return (
 		<div>
@@ -77,6 +80,7 @@ export default function AppointmentsIndividualPage(props) {
 										setCurrentItem({
 											...currentItem,
 											patient: event.target.value.name,
+											patient_id: event.target.value.id,
 										})
 										setPatient(event.target.value)
 									}}
@@ -90,7 +94,11 @@ export default function AppointmentsIndividualPage(props) {
 								</Select>
 							</div>
 						) : (
-							<Typography>No hay pacientes</Typography>
+							<Card>
+								<CardContent>
+									<Typography>No hay pacientes</Typography>
+								</CardContent>
+							</Card>
 						)}
 						{doctors.length > 0 ? (
 							<div>
@@ -105,6 +113,7 @@ export default function AppointmentsIndividualPage(props) {
 										setCurrentItem({
 											...currentItem,
 											doctor: event.target.value.name,
+											doctor_id: event.target.value.id,
 										})
 										setDoctor(event.target.value)
 									}}
@@ -118,7 +127,11 @@ export default function AppointmentsIndividualPage(props) {
 								</Select>
 							</div>
 						) : (
-							<Typography>No hay doctores</Typography>
+							<Card>
+								<CardContent>
+									<Typography>No hay doctores</Typography>
+								</CardContent>
+							</Card>
 						)}
 						<TextField
 							required
@@ -147,9 +160,15 @@ export default function AppointmentsIndividualPage(props) {
 								}}
 								onClick={() => {
 									addAppointment(currentItem)
+									sendAppointment(currentItem)
 									setCurrentItem({
 										...currentItem,
 										id: 0,
+									})
+									Swal.fire({
+										title: 'Cita agendada',
+										text: 'Cita agendada correctamente',
+										icon: 'success',
 									})
 									// sendRequest()
 								}}

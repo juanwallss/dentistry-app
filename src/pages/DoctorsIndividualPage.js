@@ -5,13 +5,26 @@ import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Fab from '@mui/material/Fab'
+import Swal from 'sweetalert2'
 import AddIcon from '@mui/icons-material/Add'
-import { doctorActions } from '../app/doctor-slice'
+import { doctorActions } from '../store/doctor-slice'
 export default function DoctorsIndividualPage(props) {
 	const [currentItem, setCurrentItem] = useState({})
 	const dispatch = useDispatch()
 	const addDoctor = (item) => {
 		dispatch(doctorActions.addDoctor(item))
+	}
+	const sendDoctor = async (item) => {
+		const response = await fetch(
+			'https://dentistry-app-614cd-default-rtdb.firebaseio.com/doctors.json',
+			{
+				method: 'POST',
+				body: JSON.stringify(item),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+		)
 	}
 	return (
 		<div>
@@ -93,7 +106,13 @@ export default function DoctorsIndividualPage(props) {
 						<Fab
 							onClick={() => {
 								console.log(currentItem)
+								sendDoctor(currentItem)
 								addDoctor(currentItem)
+								Swal.fire({
+									title: 'Doctor agregado',
+									text: 'El doctor se ha agregado correctamente',
+									icon: 'success',
+								})
 							}}
 							size="small"
 							color="primary"

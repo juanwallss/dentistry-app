@@ -2,47 +2,23 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { NavLink, Route } from 'react-router-dom'
 import EnhancedTable from '../components/Table'
-import { Modal, Typography, Box, Container, Button } from '@mui/material'
+import Swal from 'sweetalert2'
+import {
+	Modal,
+	Typography,
+	Box,
+	Container,
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+} from '@mui/material'
 import DoctorsIndividualPage from './DoctorsIndividualPage'
-const style = {
-	position: 'absolute',
-	top: '50%',
-	left: '50%',
-	transform: 'translate(-50%, -50%)',
-	width: 400,
-	bgcolor: '#e3f2fd',
-	border: '2px solid #000',
-	boxShadow: 24,
-	p: 4,
-}
-const dummy = [
-	{
-		id: 1,
-		patient: 'John Doe',
-		date: '2020-03-05',
-		doctor: 'Angelis Cepeda',
-		age: '30',
-		procedure: 'Valoracion',
-	},
-	{
-		id: 2,
-		patient: 'Jane Doe',
-		age: '25',
-		doctor: 'Angelis Cepeda',
-		date: '2020-01-01',
-		procedure: 'Limpieza y ofrecerle un puente',
-	},
-	{
-		id: 3,
-		patient: 'Frank Doe',
-		date: '2023-01-01',
-		age: '30',
-		doctor: 'Angelis Cepeda',
-		procedure: 'Cambio de resinas y presupuesto para cambio de dientes',
-	},
-]
+import { doctorActions } from '../store/doctor-slice'
+import { style } from '../theme/styles'
 
 export default function DoctorsPage() {
+	const dispatch = useDispatch()
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
@@ -51,9 +27,13 @@ export default function DoctorsPage() {
 		setData(doctors)
 		console.log(doctors)
 	}, [doctors])
+	const removeDoctor = (id) => {
+		dispatch(doctorActions.deleteDoctor(id))
+	}
+
 	return (
 		<div>
-			<Container sx={{ marginTop: '10px ' }}>
+			<Container sx={{ marginTop: '20px ' }}>
 				<EnhancedTable
 					title={'Doctores'}
 					columns={[
@@ -80,7 +60,7 @@ export default function DoctorsPage() {
 						style={{ textDecoration: 'none', color: 'white' }}
 						to={`/doctors/new`}
 					>
-						Nuevo Doctor
+						Agregar Doctor
 					</NavLink>
 				</Button>
 				<Route path="/doctors/:id">
@@ -93,15 +73,36 @@ export default function DoctorsPage() {
 					aria-describedby="simple-modal-description"
 				>
 					<Box sx={style}>
-						<Typography id="modal-modal-title" variant="h5" component="h2">
-							{`Nombre ${modalInfo.name}`}
-						</Typography>
-						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Cedula Profesional: {modalInfo.professional_id}
-						</Typography>
-						<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-							Especialidad: {modalInfo.degree}
-						</Typography>
+						<Card>
+							<CardContent>
+								<Typography id="modal-modal-title" variant="h5" component="h2">
+									{`Nombre ${modalInfo.name}`}
+								</Typography>
+								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+									Cedula Profesional: {modalInfo.professional_id}
+								</Typography>
+								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+									Especialidad: {modalInfo.degree}
+								</Typography>
+							</CardContent>
+							<CardActions>
+								<Button
+									style={{ marginTop: '10px' }}
+									onClick={() => {
+										removeDoctor(modalInfo.id)
+										setOpenModal(false)
+										Swal.fire({
+											title: 'Se elimino el doctor',
+											text: 'Se ha eliminado el doctor correctamente',
+											icon: 'success',
+										})
+									}}
+									variant="outlined"
+								>
+									Eliminar
+								</Button>
+							</CardActions>
+						</Card>
 					</Box>
 				</Modal>
 			</Container>

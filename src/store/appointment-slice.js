@@ -1,4 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+export const fetchAppointments = createAsyncThunk(
+	'appointments/fetchAppointments',
+	async () => {
+		const response = await fetch(
+			'https://dentistry-app-614cd-default-rtdb.firebaseio.com/appointments.json'
+		)
+		const data = await response.json()
+		return data
+	}
+)
 
 const appointmentSlice = createSlice({
 	name: 'appointments',
@@ -15,7 +25,7 @@ const appointmentSlice = createSlice({
 				id: newId,
 				...action.payload,
 			}
-			state.appointments.push(newAppointment)
+			state.appointments = [...state.appointments, newAppointment]
 		},
 		deleteAppointment: (state, action) => {
 			state.appointments = state.appointments.filter(
@@ -26,6 +36,11 @@ const appointmentSlice = createSlice({
 			state.appointments = action.payload
 		},
 	},
+	// extraReducers: {
+	// 	[fetchAppointments.fulfilled]: (state, action) => {
+	// 		state.appointments = action.payload
+	// 	},
+	// },
 })
 
 export const appointmentActions = appointmentSlice.actions

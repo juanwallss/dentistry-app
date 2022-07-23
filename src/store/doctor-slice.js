@@ -22,8 +22,8 @@ const doctorSlice = createSlice({
 			}
 		},
 		deleteDoctor: (state, action) => {
-			state.patients = state.patients.filter(
-				(patient) => patient.id !== action.payload
+			state.doctors = state.doctors.filter(
+				(doctor) => doctor.id !== action.payload
 			)
 		},
 	},
