@@ -44,7 +44,7 @@ const SideBar = () => {
 							textDecoration: 'none',
 						}}
 					>
-						Name
+						Quality
 					</Typography>
 
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>

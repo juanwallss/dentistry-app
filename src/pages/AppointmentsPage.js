@@ -113,7 +113,17 @@ export default function AppointmentsPage() {
 										)
 										console.log(patient)
 										window.open(
-											`https://wa.me/+521${patient.phone}/?text=Hola,%20${patient.name}!,%20este%20es%20un%20recordatorio%20para%20tu%20cita%20con%20el%20doctor%20${modalInfo.doctor}%20en%20la%20fecha%20${modalInfo.date}%20para%20tu%20procedimiento%20de:%20${modalInfo.procedure}.`
+											`https://wa.me/+521${patient.phone}/?text=Hola,%20${
+												patient.name.split(' ')[0]
+											}!,%20este%20es%20un%20recordatorio%20para%20tu%20cita%20con%20${
+												modalInfo.doctor_gender === 'm'
+													? 'la doctora:'
+													: 'el doctor:'
+											}%20${modalInfo.doctor}%20en%20la%20fecha%20${
+												modalInfo.date
+											}%20para%20tu%20procedimiento%20de:%20${
+												modalInfo.procedure
+											}.`
 										)
 									}}
 								>

@@ -100,23 +100,25 @@ export default function CalendarPage() {
 					<Typography variant="h6" id="modal-title">
 						Citas del dia {moment(modalInfo[0]?.date).format('DD-MM-YYYY')}
 					</Typography>
-					{modalInfo.map((item) => {
-						return (
-							<Card style={{ margin: '10px' }}>
-								<CardContent>
-									<Typography variant="h5" component="h2">
-										Paciente: {item.patient}
-									</Typography>
-									<Typography variant="h6" component="h2">
-										Procedimiento: {item.procedure}
-									</Typography>
-									<Typography variant="body2" component="p">
-										Medico: {item.doctor}
-									</Typography>
-								</CardContent>
-							</Card>
-						)
-					})}
+					<div>
+						{modalInfo.map((item) => {
+							return (
+								<Card style={{ margin: '10px', boxShadow: '1px 1px' }}>
+									<CardContent>
+										<Typography variant="h5" component="h2">
+											Paciente: {item.patient}
+										</Typography>
+										<Typography variant="h6" component="h2">
+											Procedimiento: {item.procedure}
+										</Typography>
+										<Typography variant="body2" component="p">
+											Doctor: {item.doctor}
+										</Typography>
+									</CardContent>
+								</Card>
+							)
+						})}
+					</div>
 				</Box>
 			</Modal>
 		</div>

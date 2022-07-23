@@ -114,6 +114,7 @@ export default function AppointmentsIndividualPage(props) {
 											...currentItem,
 											doctor: event.target.value.name,
 											doctor_id: event.target.value.id,
+											doctor_gender: event.target.value.gender,
 										})
 										setDoctor(event.target.value)
 									}}
