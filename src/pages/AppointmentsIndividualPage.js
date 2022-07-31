@@ -134,7 +134,7 @@ export default function AppointmentsIndividualPage(props) {
 								</CardContent>
 							</Card>
 						)}
-						<TextField
+						{/* <TextField
 							required
 							id="standard-required"
 							label="Procedimiento"
@@ -143,8 +143,10 @@ export default function AppointmentsIndividualPage(props) {
 							onChange={(e) =>
 								setCurrentItem({ ...currentItem, procedure: e.target.value })
 							}
-						/>
-
+						/> */}
+						<Button style={{ marginTop: '10px' }} variant="outlined">
+							Agregar Procedimiento{' '}
+						</Button>
 						<TextField
 							id="standard-required"
 							label=" "

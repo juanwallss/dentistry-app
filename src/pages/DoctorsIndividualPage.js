@@ -100,7 +100,7 @@ export default function DoctorsIndividualPage(props) {
 										id="standard-required"
 										label="Especialidad"
 										variant="standard"
-										placeholder="Correo Electrónico"
+										placeholder="Especialidad"
 										onChange={(e) =>
 											setCurrentItem({ ...currentItem, degree: e.target.value })
 										}

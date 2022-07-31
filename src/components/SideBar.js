@@ -21,37 +21,17 @@ const pages = [
 	{ name: 'Pacientes', link: '/patients' },
 	{ name: 'Doctores', link: '/doctors' },
 ]
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
-
 const SideBar = () => {
 	return (
-		<AppBar position="static">
+		<AppBar secondary position="static">
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
-					<HomeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-					<Typography
-						variant="h6"
-						noWrap
-						component="a"
-						href="/"
-						sx={{
-							mr: 2,
-							display: { xs: 'none', md: 'flex' },
-							fontFamily: 'monospace',
-							fontWeight: 700,
-							letterSpacing: '.3rem',
-							color: 'inherit',
-							textDecoration: 'none',
-						}}
-					>
-						Quality
-					</Typography>
-
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
 						{pages.map((page) => (
 							<NavLink
 								style={{ textDecoration: 'none', color: 'white' }}
 								to={page.link}
+								key={page.name}
 							>
 								<Button
 									variant="contained"
@@ -63,6 +43,22 @@ const SideBar = () => {
 							</NavLink>
 						))}
 					</Box>
+					<HomeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+					<Typography
+						variant="h6"
+						noWrap
+						sx={{
+							mr: 2,
+							display: { xs: 'none', md: 'flex' },
+							fontFamily: 'monospace',
+							fontWeight: 700,
+							letterSpacing: '.3rem',
+							color: 'inherit',
+							textDecoration: 'none',
+						}}
+					>
+						Consultorio
+					</Typography>
 				</Toolbar>
 			</Container>
 		</AppBar>
