@@ -111,7 +111,6 @@ export default function AppointmentsPage() {
 										let patient = patients.find(
 											(patient) => patient.id === patientId
 										)
-										console.log(patient)
 										window.open(
 											`https://wa.me/+521${patient.phone}/?text=Hola,%20${
 												patient.name.split(' ')[0]

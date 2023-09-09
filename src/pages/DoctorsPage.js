@@ -25,7 +25,6 @@ export default function DoctorsPage() {
 	let doctors = useSelector((state) => state.doctor.doctors)
 	useEffect(() => {
 		setData(doctors)
-		console.log(doctors)
 	}, [doctors])
 	const removeDoctor = (id) => {
 		dispatch(doctorActions.deleteDoctor(id))
@@ -83,6 +82,9 @@ export default function DoctorsPage() {
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
 									Especialidad: {modalInfo.degree}
+								</Typography>
+								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
+									Telefono: {modalInfo.phone}
 								</Typography>
 							</CardContent>
 							<CardActions>

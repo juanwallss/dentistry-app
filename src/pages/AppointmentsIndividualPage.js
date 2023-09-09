@@ -134,27 +134,39 @@ export default function AppointmentsIndividualPage(props) {
 								</CardContent>
 							</Card>
 						)}
-						{/* <TextField
+						<TextField
 							required
 							id="standard-required"
 							label="Procedimiento"
-							variant="standard"
 							placeholder="Procedimiento"
 							onChange={(e) =>
 								setCurrentItem({ ...currentItem, procedure: e.target.value })
 							}
-						/> */}
-						<Button style={{ marginTop: '10px' }} variant="outlined">
+						/>
+						{/* <Button style={{ marginTop: '10px' }} variant="outlined">
 							Agregar Procedimiento{' '}
-						</Button>
+						</Button> */}
 						<TextField
 							id="standard-required"
-							label=" "
+							label="Proxima cita"
 							type="date"
-							variant="standard"
 							onChange={(e) =>
 								setCurrentItem({ ...currentItem, date: e.target.value })
 							}
+							InputLabelProps={{
+								shrink: true,
+							  }}
+						/>
+						<TextField
+							id="standard-required"
+							label="Proxima cita"
+							type="time"
+							onChange={(e) =>
+								setCurrentItem({ ...currentItem, time: e.target.value })
+							}
+							InputLabelProps={{
+								shrink: true,
+							  }}
 						/>
 						<Link to={`/appointments`}>
 							<Fab

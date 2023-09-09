@@ -152,7 +152,6 @@ export default function DoctorsIndividualPage(props) {
 								<Link to={`/doctors`}>
 									<Fab
 										onClick={() => {
-											console.log(currentItem)
 											sendDoctor(currentItem)
 											addDoctor(currentItem)
 											Swal.fire({

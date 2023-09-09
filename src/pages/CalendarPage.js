@@ -114,6 +114,9 @@ export default function CalendarPage() {
 										<Typography variant="body2" component="p">
 											Doctor: {item.doctor}
 										</Typography>
+										<Typography variant="body2" component="p">
+											Hora: {item.time}
+										</Typography>
 									</CardContent>
 								</Card>
 							)
