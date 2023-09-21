@@ -20,21 +20,12 @@ export default function AppointmentsPage() {
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
-	let patients = useSelector((state) => state.patient.patients)
 
-	const dispatch = useDispatch()
-	const removePatient = (id) => {
-		dispatch(patientActions.deletePatient(id))
-	}
 	useEffect(() => {
-		setData(patients)
-		console.log(patients)
-	}, [patients])
-	// useEffect(() => {
-	// 	fetch('https://jsonplaceholder.typicode.com/users')
-	// 		.then((res) => res.json())
-	// 		.then((data) => setData(data))
-	// }, [data])
+		fetch('http://127.0.0.1:8000/api/patients')
+			.then((res) => res.json())
+			.then((data) => setData(data))
+	}, [])
 	return (
 		<div>
 			<Container sx={{ marginTop: '20px ' }}>
@@ -44,7 +35,7 @@ export default function AppointmentsPage() {
 						{ id: 'id', label: '# de Folio', minWidth: 50 },
 						{ id: 'name', label: 'Nombre', minWidth: 170 },
 						{ id: 'phone', label: 'Telefono', minWidth: 170 },
-						{ id: 'age', label: 'Edad', minWidth: 170 },
+						{ id: 'date_of_birth', label: 'Fecha de Nacimiento', minWidth: 170 },
 
 						{ id: 'email', label: 'Correo Electronico', minWidth: 170 },
 					]}
@@ -82,16 +73,15 @@ export default function AppointmentsPage() {
 									Telefono: {modalInfo.phone}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-									Edad: {modalInfo.age}
+									Correo Electronico: {modalInfo.email}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-									Correo Electronico: {modalInfo.email}
+									Direccion: {`${modalInfo.street}, ${modalInfo.city}, ${modalInfo.state}, CP#${modalInfo.postal_code}, ${modalInfo.country}`}
 								</Typography>
 								<CardActions>
 									<Button
 										style={{ marginTop: '10px' }}
 										onClick={() => {
-											removePatient(modalInfo.id)
 											setOpenModal(false)
 											Swal.fire({
 												title: 'Se elimino el paciente',

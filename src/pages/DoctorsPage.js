@@ -20,16 +20,16 @@ import { style } from '../theme/styles'
 export default function DoctorsPage() {
 	const dispatch = useDispatch()
 	const [data, setData] = useState([])
-	const [modalInfo, setModalInfo] = useState({})
+	const [modalInfo, setModalInfo] = useState({
+		specialties: []
+	})
 	const [openModal, setOpenModal] = useState(false)
-	let doctors = useSelector((state) => state.doctor.doctors)
-	useEffect(() => {
-		setData(doctors)
-	}, [doctors])
-	const removeDoctor = (id) => {
-		dispatch(doctorActions.deleteDoctor(id))
-	}
 
+	useEffect(() => {
+		fetch("http://127.0.0.1:8000/api/doctors").then(res => res.json())
+			.then(info => setData(info))
+			.catch(err => console.log(err))
+	}, [])
 	return (
 		<div>
 			<Container sx={{ marginTop: '20px ' }}>
@@ -43,7 +43,6 @@ export default function DoctorsPage() {
 							label: 'Cédula Profesional',
 							minWidth: 170,
 						},
-						{ id: 'degree', label: 'Especialidad', minWidth: 170 },
 						{ id: 'phone', label: 'Teléfono', minWidth: 170 },
 						{ id: 'email', label: 'Correo Electronico', minWidth: 170 },
 					]}
@@ -81,7 +80,7 @@ export default function DoctorsPage() {
 									Cedula Profesional: {modalInfo.professional_id}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-									Especialidad: {modalInfo.degree}
+									Especialidad: {modalInfo?.specialties.length > 0 ? modalInfo.specialties.map(s => s.name) : `Sin especialidad`}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
 									Telefono: {modalInfo.phone}
@@ -91,7 +90,6 @@ export default function DoctorsPage() {
 								<Button
 									style={{ marginTop: '10px' }}
 									onClick={() => {
-										removeDoctor(modalInfo.id)
 										setOpenModal(false)
 										Swal.fire({
 											title: 'Se elimino el doctor',

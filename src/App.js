@@ -13,6 +13,7 @@ import { Router, Route, Switch, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { getPatients } from './store/patient-slice'
 import { fetchAppointments } from './store/appointment-slice'
+import Navbar from './components/Navbar'
 
 function App() {
 	const dispatch = useDispatch()
@@ -24,6 +25,7 @@ function App() {
 	}, [])
 	return (
 		<div className="App">
+			<Navbar />
 			<ThemeProvider theme={theme}>
 				<ScopedCssBaseline>
 					<SideBar />

@@ -1,0 +1,29 @@
+.inner {
+  display: flex;
+  flex-direction: column;
+}
+/* Navbar.modules.css */
+
+.main {
+  background-color: #333; /* Color de fondo del encabezado */
+  color: #fff; /* Color de texto del encabezado */
+  display: flex;
+  justify-content: space-between;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Estilo para el texto "Instituto Tecnológico de Mexicali" */
+.main .inner:first-child div:first-child {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Estilo para la fecha y la hora */
+.main .inner:last-child div {
+  font-size: 14px;
+}

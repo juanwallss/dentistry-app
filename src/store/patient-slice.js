@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 export const getPatients = createAsyncThunk(
 	'patient/getPatients',
 	async (dispatch, getState) => {
-		return await fetch('https://jsonplaceholder.typicode.com/users').then(
+		return await fetch('http://127.0.0.1:8000').then(
 			(res) => res.json()
 		)
 	}

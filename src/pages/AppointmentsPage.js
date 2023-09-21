@@ -15,37 +15,36 @@ import {
 	CardActions,
 } from '@mui/material'
 import { appointmentActions } from '../store/appointment-slice'
-import { patientActions } from '../store/patient-slice'
 import { style } from '../theme/styles'
 export default function AppointmentsPage() {
 	const dispatch = useDispatch()
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
-	const [appointments1, setAppointments1] = useState([])
 	const [patientsInfo, setPatientsInfo] = useState(null)
 
-	let appointments = useSelector((state) => state.appointment.appointments)
-	let patients = useSelector((state) => state.patient.patients)
+
 	useEffect(() => {
-		// dispatch(appointmentActions.fetchAppointments())
-		setData(appointments)
-		// console.log(Object.values(appointments))
-	}, [appointments])
-
-	// useEffect(() => {
-	// 	fetch(
-	// 		'https://dentistry-app-614cd-default-rtdb.firebaseio.com/appointments.json'
-	// 	)
-	// 		.then((res) => res.json())
-	// 		.then((data) => setData(Object.values(data)))
-
-	// 	dispatch(appointmentActions.replaceAppointments(data))
-	// }, [])
-	// console.log(appointments1)
-	const removeAppointment = (id) => {
-		dispatch(appointmentActions.deleteAppointment(id))
-	}
+		fetch(
+			'http://127.0.0.1:8000/api/appointments'
+		)
+			.then((res) => res.json())
+			.then((info) => {
+				const response = info.map(ap => {
+					return {
+						...ap,
+						doctor_name: ap.doctor.name,
+						patient_name: ap.patient.name
+					}
+				})
+				console.log(response)
+				setData(Object.values(response))
+			})
+	}, [])
+	useEffect(() => {
+		console.log(modalInfo);
+	}, [modalInfo])
+	
 	return (
 		<div>
 			<Container sx={{ marginTop: '20px ' }}>
@@ -53,9 +52,11 @@ export default function AppointmentsPage() {
 					title={'Lista de Citas'}
 					columns={[
 						{ id: 'id', label: 'ID', minWidth: 50 },
-						{ id: 'patient', label: 'Paciente', minWidth: 170 },
 						{ id: 'date', label: 'Fecha', minWidth: 170 },
-						{ id: 'doctor', label: 'Doctor(a)', minWidth: 170 },
+						{ id: 'patient_name', label: 'Paciente', minWidth: 170 },
+						{ id: 'doctor_name', label: 'Doctor', minWidth: 170 },
+						{ id: 'status', label: 'Estado', minWidth: 170 },
+
 					]}
 					rows={data}
 					handleClick={(row) => {
@@ -85,21 +86,14 @@ export default function AppointmentsPage() {
 						<Card>
 							<CardContent>
 								<Typography id="modal-modal-title" variant="h5" component="h2">
-									{modalInfo.doctor
-										? `C.D. ${modalInfo.doctor}`
-										: 'No hay doctor asignado'}
+									Doctor: {modalInfo.doctor_name}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-									Paciente: {modalInfo.patient}
+									Paciente: {modalInfo.patient_name}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
 									Fecha: {modalInfo.date}
 								</Typography>
-								{modalInfo.procedure && (
-									<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-										Procedimiento: {modalInfo.procedure}
-									</Typography>
-								)}
 							</CardContent>
 							<CardActions>
 								<Button
