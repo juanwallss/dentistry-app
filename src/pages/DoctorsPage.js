@@ -24,11 +24,19 @@ export default function DoctorsPage() {
 		specialties: []
 	})
 	const [openModal, setOpenModal] = useState(false)
-
-	useEffect(() => {
+	const deleteDoctor = async (id) => {
+		await fetch('http://127.0.0.1:8000/api/doctors/'+id,{
+			method: 'DELETE'
+		}).then(() => fetchDoctors())
+	}
+	const fetchDoctors = () => {
 		fetch("http://127.0.0.1:8000/api/doctors").then(res => res.json())
 			.then(info => setData(info))
 			.catch(err => console.log(err))
+	}
+
+	useEffect(() => {
+		fetchDoctors()
 	}, [])
 	return (
 		<div>
@@ -61,9 +69,6 @@ export default function DoctorsPage() {
 						Agregar Doctor
 					</NavLink>
 				</Button>
-				<Route path="/doctors/:id">
-					<DoctorsIndividualPage />
-				</Route>
 				<Modal
 					open={openModal}
 					onClose={() => setOpenModal(false)}
@@ -91,6 +96,7 @@ export default function DoctorsPage() {
 									style={{ marginTop: '10px' }}
 									onClick={() => {
 										setOpenModal(false)
+										deleteDoctor(modalInfo.id)
 										Swal.fire({
 											title: 'Se elimino el doctor',
 											text: 'Se ha eliminado el doctor correctamente',

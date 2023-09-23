@@ -1,67 +1,94 @@
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import { Container } from '@mui/material'
 import { useSelector } from 'react-redux'
 import moment from 'moment'
+
 export default function HomePage() {
-	const appointments = useSelector((state) => state.appointment.appointments)
-	const orders = useMemo(() => {
-		if (appointments.length > 0) {
-			return [
-				{
-					name: `Pendientes: ${appointments.length}`,
-					y: appointments.length,
-					x: appointments,
-				},
-			]
-		}
-		return []
+	const [appointments, setAppointments] = useState([])
+	const [options, setOptions] = useState([])
+
+	useEffect(() => {
+		fetch(
+			'http://127.0.0.1:8000/api/appointments'
+		)
+			.then((res) => res.json())
+			.then((info) => {
+				const response = info.map(ap => {
+					return {
+						...ap,
+						doctor_name: ap.doctor.name,
+						patient_name: ap.patient.name
+					}
+				})
+				setAppointments(Object.values(response))
+			}).finally(() => {
+				if (appointments.length > 0) {
+					const pendingCount = appointments.filter(ap => ap.status === "AGENDADA")
+					const doneCount = appointments.filter(ap => ap.status === "REALIZADA")
+					const canceledCount = appointments.filter(ap => ap.status === "CANCELADA")
+					setOptions([
+						{
+							chart: {
+								type: 'pie',
+								height: '550vh',
+							},
+							width: 5,
+							accessibility: {
+								point: {
+									valueSuffix: '%',
+								},
+							},
+							plotOptions: {
+								pie: {
+									allowPointSelect: true,
+									cursor: 'pointer',
+									dataLabels: {
+										enabled: true,
+									},
+			
+									showInLegend: true,
+									enableMouseTracking: true,
+								},
+							},
+							title: {
+								text: `Citas: ${appointments.length}.`,
+							},
+							series: [
+								{
+									data: [
+										{
+											name: `Pendientes: ${pendingCount.length}`,
+											y: pendingCount.length,
+											x: appointments,
+										},{
+											name: `Agendadas: ${doneCount.length}`,
+											y: doneCount.length,
+											x: appointments,
+										},{
+											name: `Canceladas: ${canceledCount.length}`,
+											y: canceledCount.length,
+											x: appointments,
+										},
+									],
+									animation: false,
+									colorByPoint: true,
+								},
+							],
+						},
+					])
+				}
+			})
 	}, [appointments])
 
-	const options = useMemo(() => {
-		return [
-			{
-				chart: {
-					type: 'pie',
-					height: '550vh',
-				},
-				width: 5,
-				accessibility: {
-					point: {
-						valueSuffix: '%',
-					},
-				},
-				plotOptions: {
-					pie: {
-						allowPointSelect: true,
-						cursor: 'pointer',
-						dataLabels: {
-							enabled: true,
-						},
-
-						showInLegend: true,
-						enableMouseTracking: true,
-					},
-				},
-				title: {
-					text: `Citas: ${appointments.length}.`,
-				},
-				series: [
-					{
-						data: orders,
-						animation: true,
-						colorByPoint: true,
-					},
-				],
-			},
-		]
-	}, [])
+	
 	return (
 		<div>
 			<Container>
 				<h1>Citas.</h1>
-				<HighchartsReact highcharts={Highcharts} options={options[0]} />
+				{options.length > 0 ? 
+				<HighchartsReact highcharts={Highcharts} options={options[0]} /> : <></>}
 			</Container>
 		</div>
 	)

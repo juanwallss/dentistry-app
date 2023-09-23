@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink, Route } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
 import EnhancedTable from '../components/Table'
-import PatientsIndividualPage from './PatientsIndividualPage'
-import { patientActions } from '../store/patient-slice'
 import Swal from 'sweetalert2'
 import {
 	Button,
@@ -21,10 +18,20 @@ export default function AppointmentsPage() {
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
 
-	useEffect(() => {
+	const fetchAppointments = () => {
 		fetch('http://127.0.0.1:8000/api/patients')
 			.then((res) => res.json())
-			.then((data) => setData(data))
+			.then((data) => {
+				setData(data)
+			})
+	}
+	const deletePatient = async (id) => {
+		await fetch('http://127.0.0.1:8000/api/patients/'+id,{
+			method: 'DELETE'
+		}).then(() => fetchAppointments())
+	}
+	useEffect(() => {
+		fetchAppointments()
 	}, [])
 	return (
 		<div>
@@ -36,12 +43,10 @@ export default function AppointmentsPage() {
 						{ id: 'name', label: 'Nombre', minWidth: 170 },
 						{ id: 'phone', label: 'Telefono', minWidth: 170 },
 						{ id: 'date_of_birth', label: 'Fecha de Nacimiento', minWidth: 170 },
-
 						{ id: 'email', label: 'Correo Electronico', minWidth: 170 },
 					]}
 					rows={data}
 					handleClick={(row) => {
-						console.log(row)
 						setModalInfo(row)
 						setOpenModal(true)
 					}}
@@ -54,9 +59,6 @@ export default function AppointmentsPage() {
 						Agregar Paciente
 					</NavLink>
 				</Button>
-				<Route path="/patients/:id">
-					<PatientsIndividualPage />
-				</Route>
 				<Modal
 					open={openModal}
 					onClose={() => setOpenModal(false)}
@@ -83,6 +85,7 @@ export default function AppointmentsPage() {
 										style={{ marginTop: '10px' }}
 										onClick={() => {
 											setOpenModal(false)
+											deletePatient(modalInfo.id)
 											Swal.fire({
 												title: 'Se elimino el paciente',
 												text: 'Se ha eliminado el paciente correctamente',

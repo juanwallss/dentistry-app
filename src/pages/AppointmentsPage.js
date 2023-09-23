@@ -23,8 +23,7 @@ export default function AppointmentsPage() {
 	const [openModal, setOpenModal] = useState(false)
 	const [patientsInfo, setPatientsInfo] = useState(null)
 
-
-	useEffect(() => {
+	const fetchAppointments = () => {
 		fetch(
 			'http://127.0.0.1:8000/api/appointments'
 		)
@@ -37,13 +36,17 @@ export default function AppointmentsPage() {
 						patient_name: ap.patient.name
 					}
 				})
-				console.log(response)
 				setData(Object.values(response))
 			})
-	}, [])
+	}
+	const deleteAppointment = async (id) => {
+		await fetch('http://127.0.0.1:8000/api/appointments/'+id,{
+			method: 'DELETE'
+		}).then(() => fetchAppointments())
+	}
 	useEffect(() => {
-		console.log(modalInfo);
-	}, [modalInfo])
+		fetchAppointments()
+	}, [])
 	
 	return (
 		<div>
@@ -60,7 +63,6 @@ export default function AppointmentsPage() {
 					]}
 					rows={data}
 					handleClick={(row) => {
-						console.log(row)
 						setModalInfo(row)
 						setOpenModal(true)
 					}}
@@ -73,9 +75,6 @@ export default function AppointmentsPage() {
 						Agendar Cita
 					</NavLink>
 				</Button>
-				<Route path="/appointments/:id">
-					<AppointmentsIndividualPage />
-				</Route>
 				<Modal
 					open={openModal}
 					onClose={() => setOpenModal(false)}
@@ -101,22 +100,18 @@ export default function AppointmentsPage() {
 									sx={{ marginTop: '10px' }}
 									variant="outlined"
 									onClick={() => {
-										let patientId = modalInfo.patient_id
-										let patient = patients.find(
+										let patientId = modalInfo.id
+										let patient = data.find(
 											(patient) => patient.id === patientId
 										)
 										window.open(
 											`https://wa.me/+521${patient.phone}/?text=Hola,%20${
-												patient.name.split(' ')[0]
+												patient.patient_name.split(' ')[0]
 											}!,%20este%20es%20un%20recordatorio%20para%20tu%20cita%20con%20${
-												modalInfo.doctor_gender === 'm'
-													? 'la doctora:'
-													: 'el doctor:'
-											}%20${modalInfo.doctor}%20en%20la%20fecha%20${
+												'el/la doctor:'
+											}%20${modalInfo.doctor_name}%20en%20la%20fecha%20${
 												modalInfo.date
-											}%20para%20tu%20procedimiento%20de:%20${
-												modalInfo.procedure
-											}.`
+											}`
 										)
 									}}
 								>
@@ -125,7 +120,7 @@ export default function AppointmentsPage() {
 								<Button
 									style={{ marginTop: '10px' }}
 									onClick={() => {
-										removeAppointment(modalInfo.id)
+										deleteAppointment(modalInfo.id)
 										setOpenModal(false)
 										Swal.fire({
 											title: 'Se elimino la cita',
@@ -135,7 +130,7 @@ export default function AppointmentsPage() {
 									}}
 									variant="outlined"
 								>
-									Eliminar
+									Cancelar
 								</Button>
 							</CardActions>
 						</Card>

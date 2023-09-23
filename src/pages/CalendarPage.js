@@ -18,14 +18,26 @@ export default function CalendarPage() {
 	const [events, setEvents] = useState([])
 	const [modalInfo, setModalInfo] = useState([])
 	const [openModal, setOpenModal] = useState(false)
-	const appointments = useSelector((state) => state.appointment.appointments)
 	useEffect(() => {
-		setEvents(Object.values(appointments))
-	}, [appointments])
+		fetch(
+			'http://127.0.0.1:8000/api/appointments'
+		)
+			.then((res) => res.json())
+			.then((info) => {
+				const response = info.map(ap => {
+					return {
+						...ap,
+						doctor_name: ap.doctor.name,
+						patient_name: ap.patient.name
+					}
+				})
+				setEvents(Object.values(response))
+			})
+	}, [])
 	const calendarEvents = useMemo(() => {
 		return events.map((item) => {
 			return {
-				title: item.procedure,
+				title: item.patient_name,
 				start: item.date,
 			}
 		})
@@ -49,14 +61,12 @@ export default function CalendarPage() {
 						})
 						setModalInfo(list)
 						setOpenModal(true)
-						console.log(list)
 					}}
 					moreLinkClick={(info) => {
 						let date = moment(info.date).add(1, 'day').format('YYYY-MM-DD')
 						let list = events.filter((e) => {
 							return e.date === date
 						})
-						console.log(list)
 						setModalInfo(list)
 						setOpenModal(true)
 						return 'none'
@@ -70,7 +80,6 @@ export default function CalendarPage() {
 							setModalInfo(list)
 							setOpenModal(true)
 						}
-						console.log(list)
 					}}
 					buttonText={{
 						today: 'Hoy',
@@ -97,16 +106,13 @@ export default function CalendarPage() {
 								<Card style={{ margin: '10px', boxShadow: '1px 1px' }}>
 									<CardContent>
 										<Typography variant="h5" component="h2">
-											Paciente: {item.patient}
-										</Typography>
-										<Typography variant="h6" component="h2">
-											Procedimiento: {item.procedure}
+											Paciente: {item.patient_name}
 										</Typography>
 										<Typography variant="body2" component="p">
-											Doctor: {item.doctor}
+											Doctor: {item.doctor_name}
 										</Typography>
 										<Typography variant="body2" component="p">
-											Hora: {item.time}
+											Hora: {item.initial_time}
 										</Typography>
 									</CardContent>
 								</Card>

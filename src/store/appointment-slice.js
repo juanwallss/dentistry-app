@@ -1,14 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-export const fetchAppointments = createAsyncThunk(
-	'appointments/fetchAppointments',
-	async () => {
-		const response = await fetch(
-			'https://dentistry-app-614cd-default-rtdb.firebaseio.com/appointments.json'
-		)
-		const data = await response.json()
-		return data
-	}
-)
 
 const appointmentSlice = createSlice({
 	name: 'appointments',

@@ -15,19 +15,6 @@ export default function PatientsIndividualPage(props) {
 	const addPatient = (item) => {
 		dispatch(patientActions.addPatient(item))
 	}
-
-	const sendPatient = async (item) => {
-		const response = await fetch(
-			'https://dentistry-app-614cd-default-rtdb.firebaseio.com/patients.json',
-			{
-				method: 'POST',
-				body: JSON.stringify(item),
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			}
-		)
-	}
 	return (
 		<div>
 			{' '}
@@ -93,9 +80,7 @@ export default function PatientsIndividualPage(props) {
 					<Link to={`/patients`}>
 						<Fab
 							onClick={() => {
-								console.log(currentItem)
 								addPatient(currentItem)
-								sendPatient(currentItem)
 								Swal.fire({
 									title: 'Paciente Agregado',
 									text: 'Se ha agregado el paciente correctamente',

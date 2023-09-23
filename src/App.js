@@ -12,17 +12,12 @@ import ScopedCssBaseline from '@mui/material/ScopedCssBaseline'
 import { Router, Route, Switch, Redirect } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { getPatients } from './store/patient-slice'
-import { fetchAppointments } from './store/appointment-slice'
 import Navbar from './components/Navbar'
+import DoctorsIndividualPage from './pages/DoctorsIndividualPage'
+import PatientsIndividualPage from './pages/PatientsIndividualPage'
+import AppointmentsIndividualPage from './pages/AppointmentsIndividualPage'
 
 function App() {
-	const dispatch = useDispatch()
-	const patients = useSelector((state) => state.patient.patients)
-	const appointments = useSelector((state) => state.appointment.appointments)
-	useEffect(() => {
-		dispatch(getPatients())
-		dispatch(fetchAppointments())
-	}, [])
 	return (
 		<div className="App">
 			<Navbar />
@@ -35,18 +30,25 @@ function App() {
 								<HomePage />
 							</Route>
 							<Route path="/calendar">
-								{/* <h1>Aqui va el calendario</h1> */}
 								<CalendarPage />
 							</Route>
-							<Route path="/appointments">
-								{/* <h1>Lista de Citas</h1> */}
+							<Route exact path="/appointments">
 								<AppointmentsPage />
 							</Route>
-							<Route path="/patients">
+							<Route exact path="/patients">
 								<PatientPage />
 							</Route>
-							<Route path="/doctors">
+							<Route exact path="/doctors">
 								<DoctorsPage />
+							</Route>
+							<Route path="/doctors/:id">
+								<DoctorsIndividualPage />
+							</Route>
+							<Route path="/patients/:id">
+								<PatientsIndividualPage />
+							</Route>
+							<Route path="/appointments/:id">
+								<AppointmentsIndividualPage />
 							</Route>
 						</Switch>
 					</main>

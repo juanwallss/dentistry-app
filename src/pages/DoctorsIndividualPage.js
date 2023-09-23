@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
@@ -11,23 +11,26 @@ import AddIcon from '@mui/icons-material/Add'
 import { doctorActions } from '../store/doctor-slice'
 export default function DoctorsIndividualPage(props) {
 	const [currentItem, setCurrentItem] = useState({})
+	const [specialties, setSpecialties] = useState([])
+	const [specialty, setSpecialty] = useState({})
 	const [gender, setGender] = useState('')
 	const dispatch = useDispatch()
 	const addDoctor = (item) => {
 		dispatch(doctorActions.addDoctor(item))
 	}
-	const sendDoctor = async (item) => {
-		const response = await fetch(
-			'https://dentistry-app-614cd-default-rtdb.firebaseio.com/doctors.json',
-			{
-				method: 'POST',
-				body: JSON.stringify(item),
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			}
-		)
+
+	const fetchSpecialties = () => {
+		fetch('http://127.0.0.1:8000/api/specialties')
+			.then((res) => res.json())
+			.then((data) => {
+				setSpecialties(data)
+			})
 	}
+	
+	useEffect(() => {
+		fetchSpecialties()
+	}, [])
+	
 	return (
 		<div>
 			{' '}
@@ -45,6 +48,7 @@ export default function DoctorsIndividualPage(props) {
 						flexDirection: 'row',
 						justifyContent: 'space-between',
 						marginTop: '20px',
+						margin: '50px'
 					}}
 				>
 					<Grid
@@ -95,16 +99,28 @@ export default function DoctorsIndividualPage(props) {
 						<Grid item xs={12}>
 							<div style={{ display: 'flex' }}>
 								<Grid item xs={12}>
-									<TextField
-										required
-										id="standard-required"
-										label="Especialidad"
-										variant="standard"
-										placeholder="Especialidad"
-										onChange={(e) =>
-											setCurrentItem({ ...currentItem, degree: e.target.value })
-										}
-									/>
+									<InputLabel id="demo-simple-select-label">Paciente</InputLabel>
+								<Select
+									labelId="demo-simple-select-label"
+									id="demo-simple-select"
+									value={specialty}
+									label="Paciente"
+									onChange={(event) => {
+										console.log(event.target.value);
+										setCurrentItem({
+											...currentItem,
+											specialty: event.target.value.id,
+										})
+										setSpecialty(event.target.value.name)
+									}}
+									sx={{ width: '25ch' }}
+								>
+									{specialties.map((item) => (
+										<MenuItem key={item.id} value={item}>
+											{item.name}
+										</MenuItem>
+									))}
+								</Select>
 								</Grid>
 								<Grid item xs={12}>
 									<TextField
@@ -152,7 +168,6 @@ export default function DoctorsIndividualPage(props) {
 								<Link to={`/doctors`}>
 									<Fab
 										onClick={() => {
-											sendDoctor(currentItem)
 											addDoctor(currentItem)
 											Swal.fire({
 												title: 'Doctor agregado',
