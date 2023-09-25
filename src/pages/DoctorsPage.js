@@ -41,6 +41,14 @@ export default function DoctorsPage() {
 	return (
 		<div>
 			<Container sx={{ marginTop: '20px ' }}>
+				<Button sx={{ marginTop: '10px' }} variant="contained">
+					<NavLink
+						style={{ textDecoration: 'none', color: 'white' }}
+						to={`/doctors/new`}
+					>
+						Agregar Doctor
+					</NavLink>
+				</Button>
 				<EnhancedTable
 					title={'Doctores'}
 					columns={[
@@ -61,14 +69,6 @@ export default function DoctorsPage() {
 						setOpenModal(true)
 					}}
 				/>
-				<Button sx={{ marginTop: '10px' }} variant="contained">
-					<NavLink
-						style={{ textDecoration: 'none', color: 'white' }}
-						to={`/doctors/new`}
-					>
-						Agregar Doctor
-					</NavLink>
-				</Button>
 				<Modal
 					open={openModal}
 					onClose={() => setOpenModal(false)}

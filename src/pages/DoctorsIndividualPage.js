@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -8,15 +7,20 @@ import Fab from '@mui/material/Fab'
 import { InputLabel, Select, MenuItem, Grid, Item } from '@mui/material'
 import Swal from 'sweetalert2'
 import AddIcon from '@mui/icons-material/Add'
-import { doctorActions } from '../store/doctor-slice'
+import axios from 'axios'
+
 export default function DoctorsIndividualPage(props) {
 	const [currentItem, setCurrentItem] = useState({})
 	const [specialties, setSpecialties] = useState([])
 	const [specialty, setSpecialty] = useState({})
 	const [gender, setGender] = useState('')
-	const dispatch = useDispatch()
-	const addDoctor = (item) => {
-		dispatch(doctorActions.addDoctor(item))
+	const addDoctor = async (item) => {
+			console.log(item);
+			await axios.post('http://127.0.0.1:8000/api/doctors', {
+			item
+		}).then(() => {
+			console.log(item);
+		})
 	}
 
 	const fetchSpecialties = () => {
@@ -111,12 +115,12 @@ export default function DoctorsIndividualPage(props) {
 											...currentItem,
 											specialty: event.target.value.id,
 										})
-										setSpecialty(event.target.value.name)
+										setSpecialty(event.target.value)
 									}}
 									sx={{ width: '25ch' }}
 								>
 									{specialties.map((item) => (
-										<MenuItem key={item.id} value={item}>
+										<MenuItem key={item.id} value={item.id}>
 											{item.name}
 										</MenuItem>
 									))}

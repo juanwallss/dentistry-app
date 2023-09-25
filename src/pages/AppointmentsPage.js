@@ -51,6 +51,15 @@ export default function AppointmentsPage() {
 	return (
 		<div>
 			<Container sx={{ marginTop: '20px ' }}>
+
+			<Button sx={{ marginTop: '10px' }} variant="contained">
+					<NavLink
+						style={{ textDecoration: 'none', color: 'white' }}
+						to={`/appointments/new`}
+					>
+						Agendar Cita
+					</NavLink>
+				</Button>
 				<EnhancedTable
 					title={'Lista de Citas'}
 					columns={[
@@ -67,14 +76,6 @@ export default function AppointmentsPage() {
 						setOpenModal(true)
 					}}
 				/>
-				<Button sx={{ marginTop: '10px' }} variant="contained">
-					<NavLink
-						style={{ textDecoration: 'none', color: 'white' }}
-						to={`/appointments/new`}
-					>
-						Agendar Cita
-					</NavLink>
-				</Button>
 				<Modal
 					open={openModal}
 					onClose={() => setOpenModal(false)}

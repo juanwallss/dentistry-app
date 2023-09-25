@@ -2,8 +2,6 @@ import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import React, { useMemo, useEffect, useState } from 'react'
 import { Container } from '@mui/material'
-import { useSelector } from 'react-redux'
-import moment from 'moment'
 
 export default function HomePage() {
 	const [appointments, setAppointments] = useState([])
@@ -11,7 +9,7 @@ export default function HomePage() {
 
 	useEffect(() => {
 		fetch(
-			'http://127.0.0.1:8000/api/appointments'
+			'http://127.0.0.1:8000/api/chart-appointments'
 		)
 			.then((res) => res.json())
 			.then((info) => {
@@ -59,11 +57,11 @@ export default function HomePage() {
 								{
 									data: [
 										{
-											name: `Pendientes: ${pendingCount.length}`,
+											name: `Agendadas: ${pendingCount.length}`,
 											y: pendingCount.length,
 											x: appointments,
 										},{
-											name: `Agendadas: ${doneCount.length}`,
+											name: `Realizadas: ${doneCount.length}`,
 											y: doneCount.length,
 											x: appointments,
 										},{

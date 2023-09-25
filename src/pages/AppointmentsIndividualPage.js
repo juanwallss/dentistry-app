@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
 import { Link } from 'react-router-dom'
@@ -21,19 +21,37 @@ import {
 	CardContent,
 	Paper,
 } from '@mui/material'
+import axios from 'axios'
 
 export default function AppointmentsIndividualPage(props) {
 	const [currentItem, setCurrentItem] = useState({})
 	const [patient, setPatient] = useState({})
+	const [patients, setPatients] = useState([])
 	const [doctor, setDoctor] = useState({})
+	const [doctors, setDoctors] = useState([])
 	const dispatch = useDispatch()
-
-	let patients = useSelector((state) => state.patient.patients)
-	let doctors = useSelector((state) => state.doctor.doctors)
 
 	const addAppointment = (item) => {
 		dispatch(appointmentActions.addAppointment(item))
 	}
+
+	const fetchDoctors = () => {
+		fetch("http://127.0.0.1:8000/api/doctors").then(res => res.json())
+			.then(info => setDoctors(info))
+			.catch(err => console.log(err))
+	}
+	const fetchPatients = () => {
+		fetch('http://127.0.0.1:8000/api/patients')
+			.then((res) => res.json())
+			.then((data) => {
+				setPatients(data)
+			})
+	}
+
+useEffect(() => {
+	fetchDoctors()
+	fetchPatients()
+},[])
 
 	const sendAppointment = async (item) => {
 		const response = await fetch(
@@ -103,7 +121,6 @@ export default function AppointmentsIndividualPage(props) {
 						{doctors.length > 0 ? (
 							<div>
 								<InputLabel id="demo-simple-select-label">Doctor</InputLabel>
-
 								<Select
 									labelId="demo-simple-select-label"
 									id="demo-simple-select"
@@ -148,7 +165,7 @@ export default function AppointmentsIndividualPage(props) {
 						</Button> */}
 						<TextField
 							id="standard-required"
-							label="Proxima cita"
+							label="Fecha"
 							type="date"
 							onChange={(e) =>
 								setCurrentItem({ ...currentItem, date: e.target.value })
@@ -159,7 +176,7 @@ export default function AppointmentsIndividualPage(props) {
 						/>
 						<TextField
 							id="standard-required"
-							label="Proxima cita"
+							label="Hora"
 							type="time"
 							onChange={(e) =>
 								setCurrentItem({ ...currentItem, time: e.target.value })

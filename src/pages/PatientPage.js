@@ -18,7 +18,7 @@ export default function AppointmentsPage() {
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
 
-	const fetchAppointments = () => {
+	const fetchPatients = () => {
 		fetch('http://127.0.0.1:8000/api/patients')
 			.then((res) => res.json())
 			.then((data) => {
@@ -28,14 +28,22 @@ export default function AppointmentsPage() {
 	const deletePatient = async (id) => {
 		await fetch('http://127.0.0.1:8000/api/patients/'+id,{
 			method: 'DELETE'
-		}).then(() => fetchAppointments())
+		}).then(() => fetchPatients())
 	}
 	useEffect(() => {
-		fetchAppointments()
+		fetchPatients()
 	}, [])
 	return (
 		<div>
 			<Container sx={{ marginTop: '20px ' }}>
+				<Button sx={{ marginTop: '10px' }} variant="contained">
+					<NavLink
+						style={{ textDecoration: 'none', color: 'white' }}
+						to={`/patients/new`}
+					>
+						Agregar Paciente
+					</NavLink>
+				</Button>
 				<EnhancedTable
 					title={'Pacientes'}
 					columns={[
@@ -51,14 +59,6 @@ export default function AppointmentsPage() {
 						setOpenModal(true)
 					}}
 				/>
-				<Button sx={{ marginTop: '10px' }} variant="contained">
-					<NavLink
-						style={{ textDecoration: 'none', color: 'white' }}
-						to={`/patients/new`}
-					>
-						Agregar Paciente
-					</NavLink>
-				</Button>
 				<Modal
 					open={openModal}
 					onClose={() => setOpenModal(false)}
