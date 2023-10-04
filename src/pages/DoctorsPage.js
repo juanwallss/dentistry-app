@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { NavLink, Route } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import EnhancedTable from '../components/Table'
 import Swal from 'sweetalert2'
 import {
@@ -13,12 +12,9 @@ import {
 	CardActions,
 	CardContent,
 } from '@mui/material'
-import DoctorsIndividualPage from './DoctorsIndividualPage'
-import { doctorActions } from '../store/doctor-slice'
 import { style } from '../theme/styles'
 
 export default function DoctorsPage() {
-	const dispatch = useDispatch()
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({
 		specialties: []
@@ -85,14 +81,14 @@ export default function DoctorsPage() {
 									Cedula Profesional: {modalInfo.professional_id}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-									Especialidad: {modalInfo?.specialties.length > 0 ? modalInfo.specialties.map(s => s.name) : `Sin especialidad`}
+									Especialidad: {modalInfo?.specialties.length > 0 ? modalInfo.specialties.map(s => `${s.name}, `) : `Sin especialidad`}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
 									Telefono: {modalInfo.phone}
 								</Typography>
 							</CardContent>
 							<CardActions>
-								<Button
+							<Button
 									style={{ marginTop: '10px' }}
 									onClick={() => {
 										setOpenModal(false)
@@ -107,6 +103,17 @@ export default function DoctorsPage() {
 								>
 									Eliminar
 								</Button>
+								<NavLink to={`/doctors/${modalInfo.id}`}>
+								<Button
+									style={{ marginTop: '10px' }}
+									onClick={() => {
+
+									}}
+									variant="outlined"
+								>
+									Modificar
+								</Button>
+								</NavLink>
 							</CardActions>
 						</Card>
 					</Box>

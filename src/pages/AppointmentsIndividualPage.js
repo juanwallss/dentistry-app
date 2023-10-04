@@ -9,19 +9,14 @@ import {
 	Box,
 	TextField,
 	Fab,
-	Button,
-	Modal,
 	Typography,
 	InputLabel,
 	MenuItem,
-	FormControl,
 	Select,
 	Container,
 	Card,
 	CardContent,
-	Paper,
 } from '@mui/material'
-import axios from 'axios'
 
 export default function AppointmentsIndividualPage(props) {
 	const [currentItem, setCurrentItem] = useState({})

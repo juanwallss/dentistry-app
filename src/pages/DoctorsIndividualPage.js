@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
@@ -7,21 +8,62 @@ import Fab from '@mui/material/Fab'
 import { InputLabel, Select, MenuItem, Grid, Item } from '@mui/material'
 import Swal from 'sweetalert2'
 import AddIcon from '@mui/icons-material/Add'
+import { SelectChangeEvent } from '@mui/material/Select'
 import axios from 'axios'
 
 export default function DoctorsIndividualPage(props) {
+	const { id } = useParams()
 	const [currentItem, setCurrentItem] = useState({})
 	const [specialties, setSpecialties] = useState([])
-	const [specialty, setSpecialty] = useState({})
+	const [specialty, setSpecialty] = useState([])
 	const [gender, setGender] = useState('')
 	const addDoctor = async (item) => {
 			console.log(item);
+		if (id === 'new') {
 			await axios.post('http://127.0.0.1:8000/api/doctors', {
 			item
-		}).then(() => {
-			console.log(item);
-		})
+			}).then(() => {
+				console.log(item);
+			}).catch((err) => {
+				console.log(err);
+			})
+		} else {
+			await axios.put(`http://127.0.0.1:8000/api/doctors/${id}`, {
+			item
+			}).then(() => {
+				console.log(item);
+			}).catch((err) => {
+				console.log(err);
+			})
+		}
 	}
+
+	const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setSpecialty(
+      typeof value === 'string' ? value.split(',') : value,
+    );
+		setCurrentItem({
+			...currentItem,
+			specialty: value
+		})
+  };
+
+	useEffect(() => {
+		if ( id !== 'new') {
+			axios.get(`http://127.0.0.1:8000/api/doctors/${id}`)
+				.then((res) => {
+					const spArr = res.data.specialties.map(s => {
+						return s.id
+					})
+					setCurrentItem(res.data)
+					setGender(res.data.gender)
+					setSpecialty(spArr)
+				})
+		}
+	}, [id])
 
 	const fetchSpecialties = () => {
 		fetch('http://127.0.0.1:8000/api/specialties')
@@ -30,6 +72,9 @@ export default function DoctorsIndividualPage(props) {
 				setSpecialties(data)
 			})
 	}
+	useEffect(() => {
+		console.log(currentItem);
+	}, [currentItem])
 	
 	useEffect(() => {
 		fetchSpecialties()
@@ -38,6 +83,11 @@ export default function DoctorsIndividualPage(props) {
 	return (
 		<div>
 			{' '}
+			{id !== 'new' ? (
+				<h1>Editar Doctor</h1>
+			) : (
+				<h1>Nuevo Doctor</h1>
+			)}
 			<Box
 				component="form"
 				sx={{
@@ -66,9 +116,11 @@ export default function DoctorsIndividualPage(props) {
 									<TextField
 										required
 										id="standard-required"
-										label="Nombre y Apellido"
+										label="Nombre"
 										variant="standard"
-										placeholder="Nombre y Apellido"
+										placeholder="Nombre"
+										focused
+										value={currentItem?.name}
 										onChange={(e) =>
 											setCurrentItem({ ...currentItem, name: e.target.value })
 										}
@@ -78,8 +130,42 @@ export default function DoctorsIndividualPage(props) {
 									<TextField
 										required
 										id="standard-required"
+										label="Primer Apellido"
+										variant="standard"
+										value={currentItem?.father_lastname}
+										focused
+										placeholder="Primer Apellido"
+										onChange={(e) =>
+											setCurrentItem({ ...currentItem, father_lastname: e.target.value })
+										}
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										required
+										id="standard-required"
+										label="Primer Apellido"
+										variant="standard"
+										placeholder="Primer Apellido"
+										value={currentItem?.mother_lastname}
+										focused
+										onChange={(e) =>
+											setCurrentItem({ ...currentItem, mother_lastname: e.target.value })
+										}
+									/>
+								</Grid>
+							</div>
+						</Grid>
+						<Grid item xs={12}>
+							<div style={{ display: 'flex', }}>
+							<Grid item xs={12}>
+									<TextField
+										required
+										id="standard-required"
 										label="Teléfono"
 										variant="standard"
+										focused
+										value={currentItem?.phone}
 										placeholder="Teléfono"
 										onChange={(e) =>
 											setCurrentItem({ ...currentItem, phone: e.target.value })
@@ -92,7 +178,9 @@ export default function DoctorsIndividualPage(props) {
 										id="standard-required"
 										label="Correo Electrónico"
 										variant="standard"
+										focused
 										placeholder="Correo Electrónico"
+										value={currentItem?.email}
 										onChange={(e) =>
 											setCurrentItem({ ...currentItem, email: e.target.value })
 										}
@@ -103,20 +191,14 @@ export default function DoctorsIndividualPage(props) {
 						<Grid item xs={12}>
 							<div style={{ display: 'flex' }}>
 								<Grid item xs={12}>
-									<InputLabel id="demo-simple-select-label">Paciente</InputLabel>
+									<InputLabel id="demo-simple-select-label">Especialidad</InputLabel>
 								<Select
 									labelId="demo-simple-select-label"
 									id="demo-simple-select"
 									value={specialty}
-									label="Paciente"
-									onChange={(event) => {
-										console.log(event.target.value);
-										setCurrentItem({
-											...currentItem,
-											specialty: event.target.value.id,
-										})
-										setSpecialty(event.target.value)
-									}}
+									multiple
+									label="Especialidad"
+									onChange={handleChange}
 									sx={{ width: '25ch' }}
 								>
 									{specialties.map((item) => (
@@ -131,11 +213,13 @@ export default function DoctorsIndividualPage(props) {
 										required
 										id="standard-number"
 										label="Cédula Profesional"
+										focused
 										type="number"
 										InputLabelProps={{
 											shrink: true,
 										}}
 										variant="standard"
+										value={currentItem?.professional_id}
 										onChange={(e) =>
 											setCurrentItem({
 												...currentItem,
@@ -146,7 +230,6 @@ export default function DoctorsIndividualPage(props) {
 								</Grid>
 								<Grid item xs={12}>
 									<InputLabel id="demo-simple-select-label">Genero</InputLabel>
-
 									<Select
 										labelId="demo-simple-select-label"
 										id="demo-simple-select"
@@ -161,15 +244,18 @@ export default function DoctorsIndividualPage(props) {
 										}}
 										sx={{ width: '25ch' }}
 									>
-										<MenuItem key={'h'} value={'h'}>
+										<MenuItem key={'h'} value={'H'}>
 											Hombre{' '}
 										</MenuItem>
-										<MenuItem key={'m'} value={'m'}>
+										<MenuItem key={'m'} value={'M'}>
 											Mujer{' '}
 										</MenuItem>
 									</Select>
 								</Grid>
-								<Link to={`/doctors`}>
+							</div>
+						</Grid>
+					</Grid>
+					<Link to={`/doctors`}>
 									<Fab
 										onClick={() => {
 											addDoctor(currentItem)
@@ -186,9 +272,6 @@ export default function DoctorsIndividualPage(props) {
 										<AddIcon />
 									</Fab>
 								</Link>
-							</div>
-						</Grid>
-					</Grid>
 				</div>
 			</Box>
 		</div>
