@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useHistory } from 'react-router-dom'
 import EnhancedTable from '../components/Table'
 import Swal from 'sweetalert2'
 import {
@@ -15,15 +15,29 @@ import {
 import { style } from '../theme/styles'
 
 export default function DoctorsPage() {
+	const history = useHistory();
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({
 		specialties: []
 	})
 	const [openModal, setOpenModal] = useState(false)
+	const handleDelete = (rowToDelete) => {
+		deleteDoctor(rowToDelete)
+  };
+
+  const handleUpdate = (updatedRow) => {
+		history.push(`/doctors/${updatedRow}`)
+  };
 	const deleteDoctor = async (id) => {
 		await fetch('http://127.0.0.1:8000/api/doctors/'+id,{
 			method: 'DELETE'
-		}).then(() => fetchDoctors())
+		}).then(() => fetchDoctors()).finally(() => {
+			Swal.fire({
+				title: 'Se elimino el doctor',
+				text: 'Se ha eliminado el doctor correctamente',
+				icon: 'success',
+			})
+		})
 	}
 	const fetchDoctors = () => {
 		fetch("http://127.0.0.1:8000/api/doctors").then(res => res.json())
@@ -59,11 +73,9 @@ export default function DoctorsPage() {
 						{ id: 'email', label: 'Correo Electronico', minWidth: 170 },
 					]}
 					rows={data}
-					handleClick={(row) => {
-						console.log(row)
-						setModalInfo(row)
-						setOpenModal(true)
-					}}
+					actions
+					onDelete={handleDelete}
+					onUpdate={handleUpdate}
 				/>
 				<Modal
 					open={openModal}
