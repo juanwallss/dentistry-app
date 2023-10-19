@@ -1,16 +1,13 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { Link, useParams, NavLink } from 'react-router-dom'
+import { useParams, NavLink, useHistory } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import axios from 'axios'
 import '../components/DateSelector.css'
 
-import AddIcon from '@mui/icons-material/Add'
 import {
   Box,
   TextField,
-  Fab,
   Grid,
   InputLabel,
   Select,
@@ -18,13 +15,12 @@ import {
   Button
 } from '@mui/material'
 
-import { patientActions } from '../store/patient-slice'
 
 export default function PatientsIndividualPage(props) {
+	const history = useHistory();
   const { id } = useParams()
   const [currentItem, setCurrentItem] = useState({})
   const [gender, setGender] = useState('')
-  const dispatch = useDispatch()
   const addPatient = async (item) => {
     console.log(item);
     if (id === 'new') {
@@ -60,6 +56,28 @@ export default function PatientsIndividualPage(props) {
     const ageInYears = Math.abs(ageInMilliseconds.getUTCFullYear() - 1970)
 
     return ageInYears
+  }
+
+  const handleBlur = (id) => {
+    axios.get(`http://127.0.0.1:8000/api/patients/${id}`).then((res) => {
+      if(res.data.status === 404) {
+        Swal.fire({
+          title: `No se encontró registro con el id: ${id}. Desea crear nuevo?`,
+          showDenyButton: true,
+          confirmButtonText: 'Crear nuevo',
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            history.push(`/patients/new`)
+            window.location.reload()
+      } else if (result.isDenied) {
+           }
+        })
+      } else {
+        history.push(`/patients/${id}`)
+        setCurrentItem(res.data)
+      }
+    })
   }
 
   useEffect(() => {
@@ -119,6 +137,9 @@ export default function PatientsIndividualPage(props) {
                     onChange={(e) =>
                       setCurrentItem({ ...currentItem, id: e.target.value })
                     }
+                    onBlur={(e) => {
+                      handleBlur(e.target.value)
+                    }}
                   />
                 </Grid>
               <div style={{ display: 'flex' }}>
@@ -393,10 +414,7 @@ export default function PatientsIndividualPage(props) {
               sx={{ marginTop: '10px' }}
               color='success'
               variant='contained'
-            >
-              <NavLink
                 style={{ textDecoration: 'none', color: 'white' }}
-                to={`/patients`}
                 onClick={() => {
                   addPatient(currentItem)
                   Swal.fire({
@@ -407,7 +425,6 @@ export default function PatientsIndividualPage(props) {
                 }}
               >
                 Actualizar Datos
-              </NavLink>
             </Button>
             <Button
               sx={{ marginTop: '10px' }}
@@ -436,10 +453,7 @@ export default function PatientsIndividualPage(props) {
               sx={{ marginTop: '10px' }}
               variant='contained'
               color='success'
-            >
-              <NavLink
                 style={{ textDecoration: 'none', color: 'white' }}
-                to={`/patients`}
                 onClick={() => {
                   addPatient(currentItem)
                   Swal.fire({
@@ -450,7 +464,6 @@ export default function PatientsIndividualPage(props) {
                 }}
               >
                 Agregar Paciente
-              </NavLink>
             </Button>
           </div>
         )}

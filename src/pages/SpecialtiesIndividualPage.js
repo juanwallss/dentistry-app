@@ -59,7 +59,8 @@ export default function PatientsIndividualPage(props) {
         }).then((result) => {
           if (result.isConfirmed) {
           history.push(`/specialties/new`)
-      } else if (result.isDenied) {
+          window.location.reload()
+          } else if (result.isDenied) {
            }
         })
       } else {
