@@ -20,6 +20,7 @@ const pages = [
 	{ name: 'Citas', link: '/appointments' },
 	{ name: 'Pacientes', link: '/patients' },
 	{ name: 'Doctores', link: '/doctors' },
+	{ name: 'Especialidades', link: '/specialties' },
 ]
 const SideBar = () => {
 	return (
@@ -57,7 +58,7 @@ const SideBar = () => {
 							textDecoration: 'none',
 						}}
 					>
-						Consultorio
+						DentAppointments
 					</Typography>
 				</Toolbar>
 			</Container>

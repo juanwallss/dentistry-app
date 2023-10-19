@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, {useEffect, useState} from 'react'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -33,17 +33,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function StickyHeadTable(props) {
-  const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
-  const [searchText, setSearchText] = React.useState('') // Estado para el texto de búsqueda
-  const { title = '', columns = [], rows = [], handleClick = null ,  onDelete = null, onUpdate = null, actions = false} = props
+  const [searchText, setSearchText] = useState('')
+  const [filteredRows, setFilteredRows] = useState([])
+  const { title = '', columns = [], rows = [], handleClick = null ,  onDelete = null, onUpdate = null, actions = false } = props
 
-  // Filtrar las filas basadas en el texto de búsqueda
-  const filteredRows = rows.filter((row) =>
-    Object.values(row).some((value) =>
-      value.toString().toLowerCase().includes(searchText.toLowerCase())
-    )
-  )
+  
+  useEffect(() => {
+    setFilteredRows(rows.filter((row) =>
+      Object.values(row).some((value) =>
+        value !== null && value !== undefined &&
+        value.toString().toLowerCase()
+          .includes(searchText.toLowerCase())
+      )
+    ));
+  }, [searchText, rows]);
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -89,7 +92,6 @@ export default function StickyHeadTable(props) {
           </TableHead>
           <TableBody>
             {filteredRows
-              .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
               .map((row) => {
                 return (
                   <StyledTableRow
@@ -116,16 +118,21 @@ export default function StickyHeadTable(props) {
                         </TableCell>
                       )
                     })}
-                    <TableCell align='center'>
+                    {actions && (<>
+                      <TableCell align='center'>
                       <ButtonGroup variant="contained">
-                        <IconButton color="success" onClick={() => onUpdate(row.id)}>
+                        {onUpdate && (<>
+                          <IconButton color="success" onClick={() => onUpdate(row.id)}>
                           <EditIcon />
-                        </IconButton>
-                        <IconButton color='error' variant='outlined' aria-label="delete" onClick={() => onDelete(row.id)}>
+                        </IconButton></>)}
+                        {onDelete && (
+                          <>
+                          <IconButton color='error' variant='outlined' aria-label="delete" onClick={() => onDelete(row.id)}>
                           <DeleteIcon />
-                        </IconButton>
+                        </IconButton></>
+                        )}
                       </ButtonGroup>
-                    </TableCell>
+                    </TableCell></>)}
                   </StyledTableRow>
                 )
               })}

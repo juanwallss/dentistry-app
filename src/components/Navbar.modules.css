@@ -14,11 +14,11 @@
 .inner {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 /* Estilo para el texto "Instituto Tecnológico de Mexicali" */
-.main .inner:first-child div:first-child {
+.main .inner:first-child {
   font-size: 18px;
   font-weight: bold;
 }

@@ -1,10 +1,9 @@
 import * as React from 'react'
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
-import Fab from '@mui/material/Fab'
 import { InputLabel, Select, MenuItem, Grid, Item, Button } from '@mui/material'
 import Swal from 'sweetalert2'
 import axios from 'axios'
@@ -20,9 +19,9 @@ export default function DoctorsIndividualPage(props) {
     console.log(item)
     if (id === 'new') {
       await axios
-        .post('http://127.0.0.1:8000/api/doctors', {
+        .post('http://127.0.0.1:8000/api/doctors',
           item
-        })
+        )
         .then(() => {
           console.log(item)
         })
@@ -31,9 +30,9 @@ export default function DoctorsIndividualPage(props) {
         })
     } else {
       await axios
-        .put(`http://127.0.0.1:8000/api/doctors/${id}`, {
+        .put(`http://127.0.0.1:8000/api/doctors/${id}`,
           item
-        })
+        )
         .then(() => {
           console.log(item)
         })
@@ -167,9 +166,9 @@ export default function DoctorsIndividualPage(props) {
                   <TextField
                     required
                     id='standard-required'
-                    label='Primer Apellido'
+                    label='Segundo Apellido'
                     variant='standard'
-                    placeholder='Primer Apellido'
+                    placeholder='Segundo Apellido'
                     value={currentItem?.mother_lastname}
                     focused
                     onChange={(e) =>

@@ -1,0 +1,28 @@
+/* Estilo para el contenedor principal del componente DateSelector */
+.DateSelector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Estilo para el label */
+label {
+  display: inline-block;
+  margin-bottom: 5px; /* Espacio entre el label y el input */
+  font-weight: bold; /* Puedes aplicar estilos adicionales al label según tus preferencias */
+}
+
+/* Estilo para el input de fecha */
+input[type="date"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+}
+
+/* Estilo para el texto de fecha seleccionada */
+p {
+  margin-top: 10px;
+  font-size: 18px;
+}

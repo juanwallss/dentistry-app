@@ -16,6 +16,8 @@ import Navbar from './components/Navbar'
 import DoctorsIndividualPage from './pages/DoctorsIndividualPage'
 import PatientsIndividualPage from './pages/PatientsIndividualPage'
 import AppointmentsIndividualPage from './pages/AppointmentsIndividualPage'
+import SpecialtiesPage from './pages/SpecialtiesPage'
+import SpecialtiesIndividualPage from './pages/SpecialtiesIndividualPage'
 
 function App() {
 	return (
@@ -49,6 +51,12 @@ function App() {
 							</Route>
 							<Route path="/appointments/:id">
 								<AppointmentsIndividualPage />
+							</Route>
+							<Route exact path="/specialties">
+								<SpecialtiesPage />
+							</Route>
+							<Route path="/specialties/:id">
+								<SpecialtiesIndividualPage />
 							</Route>
 						</Switch>
 					</main>

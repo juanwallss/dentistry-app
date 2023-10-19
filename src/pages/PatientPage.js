@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { NavLink, Route } from 'react-router-dom'
+import { NavLink, Route, useHistory } from 'react-router-dom'
 import EnhancedTable from '../components/Table'
 import Swal from 'sweetalert2'
 import {
@@ -14,9 +14,19 @@ import {
 } from '@mui/material'
 import { style } from '../theme/styles'
 export default function AppointmentsPage() {
+	const history = useHistory();
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
+
+	
+	const handleDelete = (rowToDelete) => {
+		deletePatient(rowToDelete)
+  };
+
+  const handleUpdate = (updatedRow) => {
+		history.push(`/patients/${updatedRow}`)
+  };
 
 	const fetchPatients = () => {
 		fetch('http://127.0.0.1:8000/api/patients')
@@ -53,11 +63,10 @@ export default function AppointmentsPage() {
 						{ id: 'date_of_birth', label: 'Fecha de Nacimiento', minWidth: 170 },
 						{ id: 'email', label: 'Correo Electronico', minWidth: 170 },
 					]}
-					rows={data}
-					handleClick={(row) => {
-						setModalInfo(row)
-						setOpenModal(true)
-					}}
+					rows={data}					
+					actions
+					onDelete={handleDelete}
+					onUpdate={handleUpdate}
 				/>
 				<Modal
 					open={openModal}

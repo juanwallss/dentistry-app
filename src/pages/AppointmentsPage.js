@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { NavLink, Route } from 'react-router-dom'
+import { NavLink, useHistory } from 'react-router-dom'
 import EnhancedTable from '../components/Table'
-import AppointmentsIndividualPage from './AppointmentsIndividualPage'
 import Swal from 'sweetalert2'
 import {
 	Modal,
@@ -14,14 +12,12 @@ import {
 	CardContent,
 	CardActions,
 } from '@mui/material'
-import { appointmentActions } from '../store/appointment-slice'
 import { style } from '../theme/styles'
 export default function AppointmentsPage() {
-	const dispatch = useDispatch()
+	const history = useHistory();
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
-	const [patientsInfo, setPatientsInfo] = useState(null)
 
 	const fetchAppointments = () => {
 		fetch(
@@ -39,6 +35,14 @@ export default function AppointmentsPage() {
 				setData(Object.values(response))
 			})
 	}
+
+	const handleDelete = (rowToDelete) => {
+		deleteAppointment(rowToDelete)
+  };
+
+  const handleUpdate = (updatedRow) => {
+		history.push(`/appointments/${updatedRow}`)
+  };
 	const deleteAppointment = async (id) => {
 		await fetch('http://127.0.0.1:8000/api/appointments/'+id,{
 			method: 'DELETE'
@@ -75,6 +79,9 @@ export default function AppointmentsPage() {
 						setModalInfo(row)
 						setOpenModal(true)
 					}}
+					actions
+					onDelete={handleDelete}
+					onUpdate={handleUpdate}
 				/>
 				<Modal
 					open={openModal}
