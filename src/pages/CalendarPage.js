@@ -12,6 +12,8 @@ import {
 	Container,
 	Card,
 	CardContent,
+	Button,
+	ButtonGroup
 } from '@mui/material'
 
 export default function CalendarPage() {
@@ -103,7 +105,7 @@ export default function CalendarPage() {
 					<div>
 						{modalInfo.map((item) => {
 							return (
-								<Card style={{ margin: '10px', boxShadow: '1px 1px' }}>
+								<Card key={item.id} style={{ margin: '10px', boxShadow: '1px 1px' }}>
 									<CardContent>
 										<Typography variant="h5" component="h2">
 											Paciente: {item.patient_name}
@@ -114,6 +116,21 @@ export default function CalendarPage() {
 										<Typography variant="body2" component="p">
 											Hora: {item.initial_time}
 										</Typography>
+										{/* <Button
+                        sx={{ marginTop: '10px', marginBottom: '10px' }}
+                        variant='contained'
+                        style={{ textDecoration: 'none', color: 'white' }}
+                        onClick={() => {
+                        }}
+                      >
+                        Detalles de cita
+                      </Button>
+											 */}
+											 <ButtonGroup variant='outlined'>
+												<Button color='success' >Asistió</Button>
+												<Button >No Asistió</Button>
+												<Button color='error' >Canceló</Button>
+											 </ButtonGroup>
 									</CardContent>
 								</Card>
 							)

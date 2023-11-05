@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import { style } from '../theme/styles'
 export default function AppointmentsPage() {
-	const history = useHistory();
+	const history = useHistory()
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({})
 	const [openModal, setOpenModal] = useState(false)
@@ -38,11 +38,11 @@ export default function AppointmentsPage() {
 
 	const handleDelete = (rowToDelete) => {
 		deleteAppointment(rowToDelete)
-  };
+  }
 
   const handleUpdate = (updatedRow) => {
 		history.push(`/appointments/${updatedRow}`)
-  };
+  }
 	const deleteAppointment = async (id) => {
 		await fetch('http://127.0.0.1:8000/api/appointments/'+id,{
 			method: 'DELETE'

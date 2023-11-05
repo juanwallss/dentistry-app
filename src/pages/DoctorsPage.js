@@ -15,7 +15,7 @@ import {
 import { style } from '../theme/styles'
 
 export default function DoctorsPage() {
-	const history = useHistory();
+	const history = useHistory()
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({
 		specialties: []
@@ -23,11 +23,11 @@ export default function DoctorsPage() {
 	const [openModal, setOpenModal] = useState(false)
 	const handleDelete = (rowToDelete) => {
 		deleteDoctor(rowToDelete)
-  };
+  }
 
   const handleUpdate = (updatedRow) => {
 		history.push(`/doctors/${updatedRow}`)
-  };
+  }
 	const deleteDoctor = async (id) => {
 		await fetch('http://127.0.0.1:8000/api/doctors/'+id,{
 			method: 'DELETE'

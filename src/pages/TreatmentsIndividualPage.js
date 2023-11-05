@@ -9,20 +9,17 @@ import {
   Box,
   TextField,
   Grid,
-  Button
+  Button,
 } from '@mui/material'
 
-
-export default function PatientsIndividualPage(props) {
+function TreatmentsIndividualPage() {
+  const history = useHistory()
   const { id } = useParams()
   const [currentItem, setCurrentItem] = useState({})
-	const history = useHistory()
-
-  const addSpecialty = async (item) => {
-    console.log(item)
+  const addTreatment = async (item) => {
     if (id === 'new') {
       await axios
-        .post('http://127.0.0.1:8000/api/specialties', 
+        .post('http://127.0.0.1:8000/api/treatments', 
           item
         )
         .then(() => {
@@ -33,7 +30,7 @@ export default function PatientsIndividualPage(props) {
         })
     } else {
       await axios
-        .put(`http://127.0.0.1:8000/api/specialties/${id}`, 
+        .put(`http://127.0.0.1:8000/api/treatments/${id}`, 
           item
         )
         .then(() => {
@@ -45,12 +42,8 @@ export default function PatientsIndividualPage(props) {
     }
   }
   const handleBlur = (id) => {
-    axios.get(`http://127.0.0.1:8000/api/specialties/${id}`).then((res) => {
+    axios.get(`http://127.0.0.1:8000/api/treatments/${id}`).then((res) => {
       if(res.data.status === 404) {
-        setCurrentItem({
-          id: null,
-          name: null
-        })
         Swal.fire({
           title: `No se encontró registro con el id: ${id}. Desea crear nuevo?`,
           showDenyButton: true,
@@ -58,13 +51,13 @@ export default function PatientsIndividualPage(props) {
           denyButtonText: `Cancelar`,
         }).then((result) => {
           if (result.isConfirmed) {
-          history.push(`/specialties/new`)
-          window.location.reload()
-          } else if (result.isDenied) {
+            history.push(`/treatments/new`)
+            window.location.reload()
+      } else if (result.isDenied) {
            }
         })
       } else {
-        history.push(`/specialties/${id}`)
+        history.push(`/treatments/${id}`)
         setCurrentItem(res.data)
       }
     })
@@ -72,17 +65,16 @@ export default function PatientsIndividualPage(props) {
 
   useEffect(() => {
     if (id !== 'new') {
-      axios.get(`http://127.0.0.1:8000/api/specialties/${id}`).then((res) => {
-        setCurrentItem(res.data)
+      axios.get(`http://127.0.0.1:8000/api/treatments/${id}`).then((res) => {
+        setCurrentItem({
+          ...res.data
+        })
       })
-    } else {
-      setCurrentItem()
     }
   }, [id])
 
   return (
     <div>
-      {' '}
       <Box
         component='form'
         sx={{
@@ -91,7 +83,8 @@ export default function PatientsIndividualPage(props) {
         noValidate
         autoComplete='off'
       >
-        <div
+      {id !== 'new' ? <h1>Editar Tratamiento</h1> : <h1>Nuevo Tratamiento</h1>}
+      <div
           style={{
             display: 'flex',
             flexDirection: 'row',
@@ -109,19 +102,15 @@ export default function PatientsIndividualPage(props) {
               item
               xs={12}
             >
-              <div style={{ display: 'flex' }}>
-                <Grid
-                  item
-                  xs={12}
-                >
-                  <TextField
+              <Grid item xs={12}>
+                <TextField
                     required
                     id='standard-required'
                     label='ID'
                     variant='standard'
                     placeholder='ID'
-                    disabled={id === 'new'}
                     focused
+                    disabled={id === 'new'}
                     value={currentItem?.id}
                     onChange={(e) =>
                       setCurrentItem({ ...currentItem, id: e.target.value })
@@ -131,7 +120,8 @@ export default function PatientsIndividualPage(props) {
                     }}
                   />
                 </Grid>
-                <Grid
+              <div style={{ display: 'flex' }}>
+              <Grid
                   item
                   xs={12}
                 >
@@ -148,31 +138,63 @@ export default function PatientsIndividualPage(props) {
                     }
                   />
                 </Grid>
-              </div>
-            </Grid>
-          </Grid>
-        </div>
-        {id !== 'new' ? (
+                <Grid
+                  item
+                  xs={12}
+                >
+                  <TextField
+                    required
+                    id='standard-required'
+                    label='Precio'
+                    variant='standard'
+                    placeholder='Precio'
+                    focused
+                    value={currentItem?.price}
+                    onChange={(e) =>
+                      setCurrentItem({ ...currentItem, price: e.target.value })
+                    }
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                >
+                  <TextField
+                    required
+                    id='standard-required'
+                    label='Descripción'
+                    variant='standard'
+                    value={currentItem?.description}
+                    focused
+                    placeholder='Descripción'
+                    onChange={(e) =>
+                      setCurrentItem({
+                        ...currentItem,
+                        description: e.target.value
+                      })
+                    }
+                  />
+                </Grid>
+                </div>
+                </Grid>
+                </Grid>
+                {id !== 'new' ? (
           <div style={{ height: '30px', margin: '40px' }}>
             <Button
               sx={{ marginTop: '10px' }}
               color='success'
               variant='contained'
-            >
-              <NavLink
                 style={{ textDecoration: 'none', color: 'white' }}
-                to={`/specialties`}
                 onClick={() => {
-                  addSpecialty(currentItem)
+                  addTreatment(currentItem)
                   Swal.fire({
-                    title: 'Especialidad Modificada',
-                    text: 'Especialidad se ha modificado correctamente',
+                    title: 'Tratamiento Modificado',
+                    text: 'El Tratamiento se ha modificado correctamente',
                     icon: 'success'
                   })
                 }}
               >
-                Actualizar Especialidad
-              </NavLink>
+                Actualizar Tratamiento
             </Button>
           </div>
         ) : (
@@ -181,25 +203,24 @@ export default function PatientsIndividualPage(props) {
               sx={{ marginTop: '10px' }}
               variant='contained'
               color='success'
-            >
-              <NavLink
                 style={{ textDecoration: 'none', color: 'white' }}
-                to={`/specialties`}
                 onClick={() => {
-                  addSpecialty(currentItem)
+                  addTreatment(currentItem)
                   Swal.fire({
-                    title: 'Especialidad creada',
-                    text: 'La especialidad se ha creado correctamente',
+                    title: 'Tratamiento agregado',
+                    text: 'El Tratamiento se ha agregado correctamente',
                     icon: 'success'
                   })
                 }}
               >
-                Crear
-              </NavLink>
+                Agregar Tratamiento
             </Button>
           </div>
         )}
+        </div>
       </Box>
     </div>
   )
 }
+
+export default TreatmentsIndividualPage

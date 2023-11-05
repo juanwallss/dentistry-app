@@ -1,68 +1,138 @@
 import * as React from 'react'
 import HomeIcon from '@mui/icons-material/Home'
-
 import {
-	AppBar,
-	Box,
-	Toolbar,
-	Typography,
-	Container,
-	Button,
-	Tooltip,
-	MenuItem,
+  AppBar,
+  Box,
+  Toolbar,
+  Typography,
+  Container,
+  Button,
+  Popover,
+  List,
+  ListItem,
+  ListItemButton,
 } from '@mui/material'
-
-import { NavLink } from 'react-router-dom'
+import { NavLink, useHistory } from 'react-router-dom'
 
 const pages = [
-	{ name: 'Inicio', link: '/main' },
-	{ name: 'Calendario', link: '/calendar' },
-	{ name: 'Citas', link: '/appointments' },
-	{ name: 'Pacientes', link: '/patients' },
-	{ name: 'Doctores', link: '/doctors' },
-	{ name: 'Especialidades', link: '/specialties' },
+  // { name: 'Inicio', link: '/main', options: [] },
+  { name: 'Calendario', link: '/calendar', options: [] },
+	{
+		name: 'Mantenimientos',
+		link: '/maintenances',
+		options: [
+			{
+				name: 'Citas',
+				link: '/appointments',
+			},
+		  { 
+				name: 'Doctores', 
+				link: '/doctors'
+			},
+		],
+	},
+  {
+    name: 'Catálogos',
+    link: '/catalogs',
+    options: [
+      {
+        name: 'Pacientes',
+        link: '/patients',
+      },
+      {
+        name: 'Especialidades',
+        link: '/specialties',
+      },
+      {
+        name: 'Tratamientos',
+        link: '/treatments'
+      }
+    ],
+  },
 ]
+
 const SideBar = () => {
-	return (
-		<AppBar secondary position="static">
-			<Container maxWidth="xl">
-				<Toolbar disableGutters>
-					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-						{pages.map((page) => (
-							<NavLink
-								style={{ textDecoration: 'none', color: 'white' }}
-								to={page.link}
-								key={page.name}
-							>
-								<Button
-									variant="contained"
-									key={page.name}
-									sx={{ my: 2, color: 'white', display: 'block' }}
-								>
-									{page.name}
-								</Button>
-							</NavLink>
-						))}
-					</Box>
-					<HomeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-					<Typography
-						variant="h6"
-						noWrap
-						sx={{
-							mr: 2,
-							display: { xs: 'none', md: 'flex' },
-							fontFamily: 'monospace',
-							fontWeight: 700,
-							letterSpacing: '.3rem',
-							color: 'inherit',
-							textDecoration: 'none',
-						}}
-					>
-						DentAppointments
-					</Typography>
-				</Toolbar>
-			</Container>
-		</AppBar>
-	)
+	const history = useHistory()
+  const [popoverAnchor, setPopoverAnchor] = React.useState(null)
+  const [popoverOptions, setPopoverOptions] = React.useState([])
+
+  const openPopover = (page, event) => {
+    if (page.options.length > 0) {
+      setPopoverAnchor(event.currentTarget)
+      setPopoverOptions(page.options)
+    } else {
+      if (window.location.pathname !== page.link) {
+        history.push(page.link)
+      }
+    }
+  }
+
+  const closePopover = () => {
+    setPopoverAnchor(null)
+    setPopoverOptions([])
+  }
+
+  return (
+    <AppBar secondary position="static">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <div key={page.name}>
+                <Button
+                  variant="contained"
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  onClick={(event) => openPopover(page, event)}
+                >
+                  {page.name}
+                </Button>
+              </div>
+            ))}
+          </Box>
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            DentAppointments
+          </Typography>
+        </Toolbar>
+      </Container>
+      <Popover
+        open={Boolean(popoverAnchor)}
+        anchorEl={popoverAnchor}
+        onClose={closePopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <List>
+          {popoverOptions.map((option) => (
+            <ListItem disablePadding key={option.name}>
+              <ListItemButton
+                variant="contained"
+                sx={{ my: 2, color: 'black' }}
+                component={NavLink}
+                to={option.link}
+                onClick={closePopover}
+              >
+                {option.name}
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Popover>
+    </AppBar>
+  )
 }
+
 export default SideBar

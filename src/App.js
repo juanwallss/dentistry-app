@@ -18,6 +18,8 @@ import PatientsIndividualPage from './pages/PatientsIndividualPage'
 import AppointmentsIndividualPage from './pages/AppointmentsIndividualPage'
 import SpecialtiesPage from './pages/SpecialtiesPage'
 import SpecialtiesIndividualPage from './pages/SpecialtiesIndividualPage'
+import TreatmentsPage from './pages/TreatmentsPage'
+import TreatmentsIndividualPage from './pages/TreatmentsIndividualPage'
 
 function App() {
 	return (
@@ -54,6 +56,12 @@ function App() {
 							</Route>
 							<Route exact path="/specialties">
 								<SpecialtiesPage />
+							</Route>
+							<Route exact path="/treatments">
+								<TreatmentsPage />
+							</Route>
+							<Route path="/treatments/:id">
+								<TreatmentsIndividualPage />
 							</Route>
 							<Route path="/specialties/:id">
 								<SpecialtiesIndividualPage />

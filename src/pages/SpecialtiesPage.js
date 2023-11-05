@@ -6,17 +6,17 @@ import {
 	Container,
 } from '@mui/material'
 export default function AppointmentsPage() {
-	const history = useHistory();
+	const history = useHistory()
 	const [data, setData] = useState([])
 
 	
 	const handleDelete = (rowToDelete) => {
 		deletePatient(rowToDelete)
-  };
+  }
 
   const handleUpdate = (updatedRow) => {
 		history.push(`/specialties/${updatedRow}`)
-  };
+  }
 
 	const fetchPatients = () => {
 		fetch('http://127.0.0.1:8000/api/specialties')

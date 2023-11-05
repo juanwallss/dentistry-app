@@ -12,17 +12,19 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Button
+  Button,
+  Divider
 } from '@mui/material'
 
 
 export default function PatientsIndividualPage(props) {
-	const history = useHistory();
+	const history = useHistory()
   const { id } = useParams()
   const [currentItem, setCurrentItem] = useState({})
+  const [appointments, setAppointments] = useState([])
   const [gender, setGender] = useState('')
   const addPatient = async (item) => {
-    console.log(item);
+    console.log(item)
     if (id === 'new') {
       await axios
         .post('http://127.0.0.1:8000/api/patients', 
@@ -90,6 +92,7 @@ export default function PatientsIndividualPage(props) {
           age: age
         })
         setGender(res.data.gender)
+        setAppointments(res.data.appointments)
       })
     }
   }, [id])
@@ -467,6 +470,47 @@ export default function PatientsIndividualPage(props) {
             </Button>
           </div>
         )}
+        <h2>Expediente</h2>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            marginTop: '20px',
+            margin: '50px'
+          }}
+        >
+          {appointments.length > 0 && (<>
+            {appointments.map((a, index) => {
+              if (a.status !== 'CANCELADA') {
+                return (<div key={a.date}>
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <h3>Fecha: {a.date}</h3>
+                    <h3>Estado: {a.status}</h3>
+                  </div>
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <p>Tratamiento: {a.treatments.name}</p>
+                    <p>Medico: {a.doctor.name + " " + a.doctor.father_lastname}</p>
+                  </div>
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <p>Precio: ${a.treatments.price}</p>
+                    <Button
+                        sx={{ marginTop: '10px', marginBottom: '10px' }}
+                        variant='contained'
+                        style={{ textDecoration: 'none', color: 'white' }}
+                        onClick={() => {
+                          history.push(`/appointments/${a.id}`)
+                        }}
+                      >
+                        Detalles de cita
+                      </Button>
+                  </div>
+                  <Divider />
+                </div>)
+              }
+            })}
+          </>)}
+        </div>
       </Box>
     </div>
   )
