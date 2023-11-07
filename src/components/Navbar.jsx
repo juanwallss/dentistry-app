@@ -49,8 +49,8 @@ function Navbar() {
         <div>{pos}</div>
       </div>
       <div className='inner'>
-        <div>Fecha: {formattedDate}</div>
-        <div>Hora: {formattedTime}</div>
+        <div>{formattedDate}</div>
+        <div>{formattedTime}</div>
       </div>
     </div>
   )

@@ -48,7 +48,18 @@ const pages = [
         link: '/treatments'
       }
     ],
-  },
+  }, {
+    name: 'Reportes',
+    options: [
+      {
+        name: 'Reporte de citas por doctor',
+        link: '/report_by_doctor',
+      }, {
+        name: 'Reporte de citas por paciente',
+        link: '/report_by_patient',
+      }
+    ]
+  }
 ]
 
 const SideBar = () => {

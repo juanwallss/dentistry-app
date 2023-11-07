@@ -1,16 +1,18 @@
 import * as React from 'react'
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useHistory } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
-import { InputLabel, Select, MenuItem, Grid, Item, Button } from '@mui/material'
+import { InputLabel, Select, MenuItem, Grid, Item, Button, Divider } from '@mui/material'
 import Swal from 'sweetalert2'
 import axios from 'axios'
 
 export default function DoctorsIndividualPage(props) {
+	const history = useHistory()
   const { id } = useParams()
   const [currentItem, setCurrentItem] = useState({})
+  const [appointments, setAppointments] = useState([])
   const [specialties, setSpecialties] = useState([])
   const [specialty, setSpecialty] = useState([])
   const [gender, setGender] = useState('')
@@ -72,6 +74,7 @@ export default function DoctorsIndividualPage(props) {
 				})
         setGender(res.data.gender)
         setSpecialty(spArr)
+        setAppointments(res.data.appointments)
       })
     }
   }, [id])
@@ -90,7 +93,27 @@ export default function DoctorsIndividualPage(props) {
   useEffect(() => {
     fetchSpecialties()
   }, [])
-
+  const handleBlur = (id) => {
+    axios.get(`http://127.0.0.1:8000/api/doctors/${id}`).then((res) => {
+    	if(res.data.status === 404) {
+    		Swal.fire({
+    			title: `No se encontró registro con el id: ${id}. Desea crear nuevo?`,
+    			showDenyButton: true,
+    			confirmButtonText: 'Crear nuevo',
+    			denyButtonText: `Cancelar`,
+    		}).then((result) => {
+    			if (result.isConfirmed) {
+    				history.push(`/doctors/new`)
+    				window.location.reload()
+    	} else if (result.isDenied) {
+    			 }
+    		})
+    	} else {
+    		history.push(`/doctors/${id}`)
+    		setCurrentItem(res.data)
+    	}
+    })
+  }
   return (
     <div>
       {' '}
@@ -121,6 +144,32 @@ export default function DoctorsIndividualPage(props) {
               item
               xs={12}
             >
+            <Grid
+              item
+              xs={12}
+            >
+              <Grid
+                item
+                xs={12}
+              >
+                <TextField
+                  required
+                  id='standard-required'
+                  label='ID'
+                  variant='standard'
+                  placeholder='ID'
+                  focused
+                  disabled={id === 'new'}
+                  value={currentItem?.id}
+                  onChange={(e) =>
+                    setCurrentItem({ ...currentItem, id: e.target.value })
+                  }
+                  onBlur={(e) => {
+                    handleBlur(e.target.value)
+                  }}
+                />
+              </Grid>
+            </Grid>
               <div style={{ display: 'flex' }}>
                 <Grid
                   item
@@ -371,6 +420,46 @@ export default function DoctorsIndividualPage(props) {
               Agregar Doctor
             </NavLink>
           </Button></>)}
+        </div>
+        <h2>Expediente</h2>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            marginTop: '20px',
+            margin: '50px'
+          }}
+        >
+          {appointments.length > 0 && (<>
+            {appointments.map((a, index) => {
+              if (a.status !== 'CANCELADA') {
+                return (<div key={a.date}>
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <h3>Fecha: {a.date}. De: {a.initial_time} - {a.end_time}</h3>
+                    <h3>Estado: {a.status}</h3>
+                  </div>
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <p>Tratamiento: {a.treatments.name}</p>
+                    <p>Paciente: {a.patient.name + " " + a.patient.father_lastname}</p>
+                  </div>
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <Button
+                        sx={{ marginTop: '10px', marginBottom: '10px' }}
+                        variant='contained'
+                        style={{ textDecoration: 'none', color: 'white' }}
+                        onClick={() => {
+                          history.push(`/appointments/${a.id}`)
+                        }}
+                      >
+                        Detalles de cita
+                      </Button>
+                  </div>
+                  <Divider />
+                </div>)
+              }
+            })}
+          </>)}
         </div>
       </Box>
     </div>
