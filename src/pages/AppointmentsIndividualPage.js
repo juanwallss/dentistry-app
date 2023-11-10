@@ -17,7 +17,16 @@ import {
   CardContent,
   Grid
 } from '@mui/material'
-
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 export default function AppointmentsIndividualPage(props) {
   const history = useHistory()
   const { id } = useParams()
@@ -29,6 +38,10 @@ export default function AppointmentsIndividualPage(props) {
   const [treatments, setTreatments] = useState([])
   const [doctors, setDoctors] = useState([])
   const [isDeleted, setIsDeleted] = useState(false)
+  const [initialTimeArr, setInitialTimesArr] = useState([])
+  const [initialTime, setInitialTime] = useState({})
+  const [endTime, setEndTime] = useState({})
+  const [endTimeArr, setEndTimeArr] = useState([])
 
   const fetchDoctors = () => {
 		return fetch('http://127.0.0.1:8000/api/doctors')
@@ -44,13 +57,20 @@ export default function AppointmentsIndividualPage(props) {
 		return fetch('http://127.0.0.1:8000/api/treatments')
 			.then((res) => res.json())
 	}
+
+  const fetchSchedules = () => {
+    return fetch('http://127.0.0.1:8000/api/schedules')
+			.then((res) => res.json())
+  }
 	
 	useEffect(() => {
-		Promise.all([fetchDoctors(), fetchPatients(), fetchTreatments()])
-			.then(([doctorsData, patientsData, treatmentsData]) => {
+		Promise.all([fetchDoctors(), fetchPatients(), fetchTreatments(), fetchSchedules()])
+			.then(([doctorsData, patientsData, treatmentsData, schedulesData]) => {
 				setDoctors(doctorsData)
 				setPatients(patientsData)
 				setTreatments(treatmentsData)
+        setInitialTimesArr(schedulesData)
+        setEndTimeArr(schedulesData)
 			})
 			.catch((err) => console.log(err))
 	}, [])
@@ -64,9 +84,19 @@ export default function AppointmentsIndividualPage(props) {
         .then(() => {
           history.push(`/appointments/${id}`)
     		  setCurrentItem(item)
+          Swal.fire({
+            title: 'Cita creada',
+            text: `Cita agendada exitosamente`,
+            icon: 'success'
+          })
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err.response.data.error)
+          return Swal.fire({
+            title: 'Error',
+            text: `${err.response.data.error} Favor de seleccionar otro horario`,
+            icon: 'error'
+          })
         })
     } else {
       await axios
@@ -108,6 +138,8 @@ export default function AppointmentsIndividualPage(props) {
       setDoctor(res.data.doctor_id)
       setPatient(res.data.patient_id)
       setTreatment(res.data.treatment_id)
+      setInitialTime(res.data.initial_time_id)
+      setEndTime(res.data.end_time_id)
       if (res.data.status === 'CANCELADA') {
         setIsDeleted(true)
       } else {
@@ -412,37 +444,73 @@ export default function AppointmentsIndividualPage(props) {
                     />
                   </div>
                   <div>
-                    <InputLabel id='demo-simple-select-label'>Hora inicio</InputLabel>
-                    <TextField
-                      id='standard-required'
-                      label=''
-                    disabled={isDeleted}
-                    value={currentItem?.initial_time}
-                      type='time'
-                      onChange={(e) =>
-                        setCurrentItem({ ...currentItem, initial_time: e.target.value })
-                      }
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
+                  {initialTimeArr.length > 0 && (
+                    <div>
+                      <InputLabel id='demo-simple-select-label'>
+                        De
+                      </InputLabel>
+                      <Select
+                        labelId='demo-simple-select-label'
+                        id='demo-simple-select'
+                        value={initialTime}
+                        MenuProps={MenuProps}
+                        label='Hora de inicio'
+                        disabled={isDeleted}
+                        onChange={(event) => {
+                              setCurrentItem({
+                                ...currentItem,
+                                initial_time_id: event.target.value
+                              })
+                              setInitialTime(event.target.value)
+                            }}
+                        sx={{ width: '25ch' }}
+                      >
+                        {initialTimeArr.map((item) => (
+                          <MenuItem
+                            key={item.id}
+                            value={item.id}
+                          >
+                            {item.time}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </div>
+                  )}
                   </div>
-
+                  
                   <div>
-                    <InputLabel id='demo-simple-select-label'>Hora salida</InputLabel>
-                    <TextField
-                      id='standard-required'
-                      label=''
-                    disabled={isDeleted}
-                    value={currentItem?.end_time}
-                      type='time'
-                      onChange={(e) =>
-                        setCurrentItem({ ...currentItem, end_time: e.target.value })
-                      }
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
+                  {endTimeArr.length > 0 && (
+                    <div>
+                      <InputLabel id='demo-simple-select-label'>
+                        A
+                      </InputLabel>
+                      <Select
+                        labelId='demo-simple-select-label'
+                        id='demo-simple-select'
+                        value={endTime}
+                        MenuProps={MenuProps}
+                        label='Hora final'
+                        disabled={isDeleted}
+                        onChange={(event) => {
+                              setCurrentItem({
+                                ...currentItem,
+                                end_time_id: event.target.value
+                              })
+                              setEndTime(event.target.value)
+                            }}
+                        sx={{ width: '25ch' }}
+                      >
+                        {endTimeArr.map((item) => (
+                          <MenuItem
+                            key={item.id}
+                            value={item.id}
+                          >
+                            {item.time}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </div>
+                  )}
                   </div>
                   
                 </div>
@@ -476,7 +544,7 @@ export default function AppointmentsIndividualPage(props) {
                           deleteAppointment(currentItem.id)
                           Swal.fire({
                             title: 'Cita Modificado',
-                            text: 'La Cita se ha modificado correctamente',
+                            text: 'La Cita se ha eliminado correctamente',
                             icon: 'success'
                           })
                         }}
@@ -494,11 +562,6 @@ export default function AppointmentsIndividualPage(props) {
                         style={{ textDecoration: 'none', color: 'white' }}
                         onClick={() => {
                           addAppointment(currentItem)
-                          Swal.fire({
-                            title: 'Cita agregado',
-                            text: 'La Cita se ha agendado correctamente',
-                            icon: 'success'
-                          })
                         }}
                       >
                         Agendar Cita
