@@ -22,7 +22,7 @@ export default function PatientsIndividualPage(props) {
     console.log(item)
     if (id === 'new') {
       await axios
-        .post('http://127.0.0.1:8000/api/specialties', 
+        .post('http://127.0.0.1:8000/api/especialidades', 
           item
         )
         .then(() => {
@@ -33,7 +33,7 @@ export default function PatientsIndividualPage(props) {
         })
     } else {
       await axios
-        .put(`http://127.0.0.1:8000/api/specialties/${id}`, 
+        .put(`http://127.0.0.1:8000/api/especialidades/${id}`, 
           item
         )
         .then(() => {
@@ -45,11 +45,11 @@ export default function PatientsIndividualPage(props) {
     }
   }
   const handleBlur = (id) => {
-    axios.get(`http://127.0.0.1:8000/api/specialties/${id}`).then((res) => {
+    axios.get(`http://127.0.0.1:8000/api/especialidades/${id}`).then((res) => {
       if(res.data.status === 404) {
         setCurrentItem({
           id: null,
-          name: null
+          nombre: null
         })
         Swal.fire({
           title: `No se encontró registro con el id: ${id}. Desea crear nuevo?`,
@@ -58,13 +58,13 @@ export default function PatientsIndividualPage(props) {
           denyButtonText: `Cancelar`,
         }).then((result) => {
           if (result.isConfirmed) {
-          history.push(`/specialties/new`)
+          history.push(`/especialidades/new`)
           window.location.reload()
           } else if (result.isDenied) {
            }
         })
       } else {
-        history.push(`/specialties/${id}`)
+        history.push(`/especialidades/${id}`)
         setCurrentItem(res.data)
       }
     })
@@ -72,7 +72,7 @@ export default function PatientsIndividualPage(props) {
 
   useEffect(() => {
     if (id !== 'new') {
-      axios.get(`http://127.0.0.1:8000/api/specialties/${id}`).then((res) => {
+      axios.get(`http://127.0.0.1:8000/api/especialidades/${id}`).then((res) => {
         setCurrentItem(res.data)
       })
     } else {
@@ -142,9 +142,9 @@ export default function PatientsIndividualPage(props) {
                     variant='standard'
                     placeholder='Nombre'
                     focused
-                    value={currentItem?.name}
+                    value={currentItem?.nombre}
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, name: e.target.value })
+                      setCurrentItem({ ...currentItem, nombre: e.target.value })
                     }
                   />
                 </Grid>
@@ -161,7 +161,7 @@ export default function PatientsIndividualPage(props) {
             >
               <NavLink
                 style={{ textDecoration: 'none', color: 'white' }}
-                to={`/specialties`}
+                to={`/especialidades`}
                 onClick={() => {
                   addSpecialty(currentItem)
                   Swal.fire({
@@ -184,7 +184,7 @@ export default function PatientsIndividualPage(props) {
             >
               <NavLink
                 style={{ textDecoration: 'none', color: 'white' }}
-                to={`/specialties`}
+                to={`/especialidades`}
                 onClick={() => {
                   addSpecialty(currentItem)
                   Swal.fire({

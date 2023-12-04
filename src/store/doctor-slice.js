@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const doctorSlice = createSlice({
-	name: 'doctors',
+	name: 'doctores',
 	initialState: {
-		doctors: [],
+		doctores: [],
 		id: 0,
 	},
 	reducers: {
@@ -16,13 +16,13 @@ const doctorSlice = createSlice({
 					...newItem,
 					id: newId,
 				}
-				state.doctors.push(newPatient)
+				state.doctores.push(newPatient)
 			} else {
 				alert('Campos son obligatorios')
 			}
 		},
-		deleteDoctor: (state, action) => {
-			state.doctors = state.doctors.filter(
+		eliminadooctor: (state, action) => {
+			state.doctores = state.doctores.filter(
 				(doctor) => doctor.id !== action.payload
 			)
 		},

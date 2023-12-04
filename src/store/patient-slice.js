@@ -10,9 +10,9 @@ export const getPatients = createAsyncThunk(
 )
 
 const patientSlice = createSlice({
-	name: 'patients',
+	name: 'pacientes',
 	initialState: {
-		patients: [],
+		pacientes: [],
 		id: 0,
 		status: null,
 	},
@@ -24,10 +24,10 @@ const patientSlice = createSlice({
 				id: newId,
 				...action.payload,
 			}
-			state.patients.push(newPatient)
+			state.pacientes.push(newPatient)
 		},
 		deletePatient: (state, action) => {
-			state.patients = state.patients.filter(
+			state.pacientes = state.pacientes.filter(
 				(patient) => patient.id !== action.payload
 			)
 		},
@@ -38,7 +38,7 @@ const patientSlice = createSlice({
 	// 	},
 	// 	[getPatients.fulfilled]: (state, action) => {
 	// 		state.status = 'Success'
-	// 		state.patients = action.payload
+	// 		state.pacientes = action.payload
 	// 	},
 	// 	[getPatients.rejected]: (state, action) => {
 	// 		state.status = 'Error'

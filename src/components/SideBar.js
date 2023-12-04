@@ -23,11 +23,11 @@ const pages = [
 		options: [
 			{
 				name: 'Citas',
-				link: '/appointments',
+				link: '/citas',
 			},
 		  { 
 				name: 'Doctores', 
-				link: '/doctors'
+				link: '/doctores'
 			},
 		],
 	},
@@ -37,15 +37,15 @@ const pages = [
     options: [
       {
         name: 'Pacientes',
-        link: '/patients',
+        link: '/pacientes',
       },
       {
         name: 'Especialidades',
-        link: '/specialties',
+        link: '/especialidades',
       },
       {
         name: 'Tratamientos',
-        link: '/treatments'
+        link: '/tratamientos'
       }
     ],
   }, {

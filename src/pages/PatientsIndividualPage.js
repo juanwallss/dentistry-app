@@ -21,13 +21,13 @@ export default function PatientsIndividualPage(props) {
 	const history = useHistory()
   const { id } = useParams()
   const [currentItem, setCurrentItem] = useState({})
-  const [appointments, setAppointments] = useState([])
-  const [gender, setGender] = useState('')
+  const [citas, setAppointments] = useState([])
+  const [genero, setgenero] = useState('')
   const addPatient = async (item) => {
     console.log(item)
     if (id === 'new') {
       await axios
-        .post('http://127.0.0.1:8000/api/patients', 
+        .post('http://127.0.0.1:8000/api/pacientes', 
           item
         )
         .then(() => {
@@ -38,7 +38,7 @@ export default function PatientsIndividualPage(props) {
         })
     } else {
       await axios
-        .put(`http://127.0.0.1:8000/api/patients/${id}`, 
+        .put(`http://127.0.0.1:8000/api/pacientes/${id}`, 
           item
         )
         .then(() => {
@@ -61,7 +61,7 @@ export default function PatientsIndividualPage(props) {
   }
 
   const handleBlur = (id) => {
-    axios.get(`http://127.0.0.1:8000/api/patients/${id}`).then((res) => {
+    axios.get(`http://127.0.0.1:8000/api/pacientes/${id}`).then((res) => {
       if(res.data.status === 404) {
         Swal.fire({
           title: `No se encontró registro con el id: ${id}. Desea crear nuevo?`,
@@ -70,13 +70,13 @@ export default function PatientsIndividualPage(props) {
           denyButtonText: `Cancelar`,
         }).then((result) => {
           if (result.isConfirmed) {
-            history.push(`/patients/new`)
+            history.push(`/pacientes/new`)
             window.location.reload()
       } else if (result.isDenied) {
            }
         })
       } else {
-        history.push(`/patients/${id}`)
+        history.push(`/pacientes/${id}`)
         setCurrentItem(res.data)
       }
     })
@@ -84,15 +84,15 @@ export default function PatientsIndividualPage(props) {
 
   useEffect(() => {
     if (id !== 'new') {
-      axios.get(`http://127.0.0.1:8000/api/patients/${id}`).then((res) => {
+      axios.get(`http://127.0.0.1:8000/api/pacientes/${id}`).then((res) => {
         console.log(res.data)
-        const age = calculateAge(res.data.date_of_birth)
+        const age = calculateAge(res.data.fecha_nac)
         setCurrentItem({
           ...res.data,
           age: age
         })
-        setGender(res.data.gender)
-        setAppointments(res.data.appointments)
+        setgenero(res.data.genero)
+        setAppointments(res.data.citas)
       })
     }
   }, [id])
@@ -158,9 +158,9 @@ export default function PatientsIndividualPage(props) {
                     variant='standard'
                     placeholder='Nombre'
                     focused
-                    value={currentItem?.name}
+                    value={currentItem?.nombre}
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, name: e.target.value })
+                      setCurrentItem({ ...currentItem, nombre: e.target.value })
                     }
                   />
                 </Grid>
@@ -173,13 +173,13 @@ export default function PatientsIndividualPage(props) {
                     id='standard-required'
                     label='Primer Apellido'
                     variant='standard'
-                    value={currentItem?.father_lastname}
+                    value={currentItem?.apellido_paterno}
                     focused
                     placeholder='Primer Apellido'
                     onChange={(e) =>
                       setCurrentItem({
                         ...currentItem,
-                        father_lastname: e.target.value
+                        apellido_paterno: e.target.value
                       })
                     }
                   />
@@ -194,12 +194,12 @@ export default function PatientsIndividualPage(props) {
                     label='Segundo Apellido'
                     variant='standard'
                     placeholder='Segundo Apellido'
-                    value={currentItem?.mother_lastname}
+                    value={currentItem?.apellido_materno}
                     focused
                     onChange={(e) =>
                       setCurrentItem({
                         ...currentItem,
-                        mother_lastname: e.target.value
+                        apellido_materno: e.target.value
                       })
                     }
                   />
@@ -222,10 +222,10 @@ export default function PatientsIndividualPage(props) {
                     label='Teléfono'
                     variant='standard'
                     focused
-                    value={currentItem?.phone}
+                    value={currentItem?.telefono}
                     placeholder='Teléfono'
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, phone: e.target.value })
+                      setCurrentItem({ ...currentItem, telefono: e.target.value })
                     }
                   />
                 </Grid>
@@ -258,9 +258,9 @@ export default function PatientsIndividualPage(props) {
                     variant='standard'
                     type="date"
                     focused
-                    value={currentItem?.date_of_birth}
+                    value={currentItem?.fecha_nac}
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, date_of_birth: e.target.value })
+                      setCurrentItem({ ...currentItem, fecha_nac: e.target.value })
                     }
                   />
                   {/* {id !== 'new' && (
@@ -286,10 +286,10 @@ export default function PatientsIndividualPage(props) {
                     label='Calle y numero'
                     variant='standard'
                     focused
-                    value={currentItem?.street}
+                    value={currentItem?.calle}
                     placeholder=''
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, street: e.target.value })
+                      setCurrentItem({ ...currentItem, calle: e.target.value })
                     }
                   />
                 </Grid>
@@ -304,9 +304,9 @@ export default function PatientsIndividualPage(props) {
                     variant='standard'
                     focused
                     placeholder='Ciudad'
-                    value={currentItem?.city}
+                    value={currentItem?.ciudad}
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, city: e.target.value })
+                      setCurrentItem({ ...currentItem, ciudad: e.target.value })
                     }
                   />
                 </Grid>
@@ -320,9 +320,9 @@ export default function PatientsIndividualPage(props) {
                     variant='standard'
                     label='Estado'
                     focused
-                    value={currentItem?.state}
+                    value={currentItem?.estado}
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, state: e.target.value })
+                      setCurrentItem({ ...currentItem, estado: e.target.value })
                     }
                   />
                 </Grid>
@@ -344,12 +344,12 @@ export default function PatientsIndividualPage(props) {
                     label='País'
                     variant='standard'
                     focused
-                    value={currentItem?.country}
+                    value={currentItem?.pais}
                     placeholder=''
                     onChange={(e) =>
                       setCurrentItem({
                         ...currentItem,
-                        country: e.target.value
+                        pais: e.target.value
                       })
                     }
                   />
@@ -382,14 +382,14 @@ export default function PatientsIndividualPage(props) {
                   <Select
                     labelId='demo-simple-select-label'
                     id='demo-simple-select'
-                    value={gender}
+                    value={genero}
                     label='Genero'
                     onChange={(event) => {
                       setCurrentItem({
                         ...currentItem,
-                        gender: event.target.value
+                        genero: event.target.value
                       })
-                      setGender(event.target.value)
+                      setgenero(event.target.value)
                     }}
                     sx={{ width: '25ch' }}
                   >
@@ -436,7 +436,7 @@ export default function PatientsIndividualPage(props) {
             >
               <NavLink
                 style={{ textDecoration: 'none', color: 'white' }}
-                to={`/patients`}
+                to={`/pacientes`}
                 onClick={() => {
                   Swal.fire({
                     title: 'Se elimino el Paciente',
@@ -480,8 +480,8 @@ export default function PatientsIndividualPage(props) {
             margin: '50px'
           }}
         >
-          {appointments.length > 0 && (<>
-            {appointments.map((a, index) => {
+          {citas.length > 0 && (<>
+            {citas.map((a, index) => {
               if (a.status !== 'CANCELADA') {
                 return (<div key={a.date}>
                   <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -489,17 +489,17 @@ export default function PatientsIndividualPage(props) {
                     <h3>Estado: {a.status}</h3>
                   </div>
                   <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <p>Tratamiento: {a.treatments.name}</p>
-                    <p>Medico: {a.doctor.name + " " + a.doctor.father_lastname}</p>
+                    <p>Tratamiento: {a.tratamientos.nombre}</p>
+                    <p>Medico: {a.doctor.nombre + " " + a.doctor.apellido_paterno}</p>
                   </div>
                   <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <p>Precio: ${a.treatments.price}</p>
+                    <p>Precio: ${a.tratamientos.precio}</p>
                     <Button
                         sx={{ marginTop: '10px', marginBottom: '10px' }}
                         variant='contained'
                         style={{ textDecoration: 'none', color: 'white' }}
                         onClick={() => {
-                          history.push(`/appointments/${a.id}`)
+                          history.push(`/citas/${a.id}`)
                         }}
                       >
                         Detalles de cita

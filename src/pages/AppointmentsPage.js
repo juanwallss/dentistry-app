@@ -21,15 +21,15 @@ export default function AppointmentsPage() {
 
 	const fetchAppointments = () => {
 		fetch(
-			'http://127.0.0.1:8000/api/appointments'
+			'http://127.0.0.1:8000/api/citas'
 		)
 			.then((res) => res.json())
 			.then((info) => {
 				const response = info.map(ap => {
 					return {
 						...ap,
-						doctor_name: ap.doctor.name,
-						patient_name: ap.patient.name
+						doctor_name: ap.doctor.nombre,
+						patient_name: ap.patient.nombre
 					}
 				})
 				setData(Object.values(response))
@@ -41,10 +41,10 @@ export default function AppointmentsPage() {
   }
 
   const handleUpdate = (updatedRow) => {
-		history.push(`/appointments/${updatedRow}`)
+		history.push(`/citas/${updatedRow}`)
   }
 	const deleteAppointment = async (id) => {
-		await fetch('http://127.0.0.1:8000/api/appointments/'+id,{
+		await fetch('http://127.0.0.1:8000/api/citas/'+id,{
 			method: 'DELETE'
 		}).then(() => fetchAppointments())
 	}
@@ -59,7 +59,7 @@ export default function AppointmentsPage() {
 			<Button sx={{ marginTop: '10px' }} variant="contained">
 					<NavLink
 						style={{ textDecoration: 'none', color: 'white' }}
-						to={`/appointments/new`}
+						to={`/citas/new`}
 					>
 						Agendar Cita
 					</NavLink>
@@ -113,7 +113,7 @@ export default function AppointmentsPage() {
 											(patient) => patient.id === patientId
 										)
 										window.open(
-											`https://wa.me/+521${patient.phone}/?text=Hola,%20${
+											`https://wa.me/+521${patient.telefono}/?text=Hola,%20${
 												patient.patient_name.split(' ')[0]
 											}!,%20este%20es%20un%20recordatorio%20para%20tu%20cita%20con%20${
 												'el/la doctor:'

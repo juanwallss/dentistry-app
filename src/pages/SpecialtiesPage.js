@@ -15,18 +15,18 @@ export default function AppointmentsPage() {
   }
 
   const handleUpdate = (updatedRow) => {
-		history.push(`/specialties/${updatedRow}`)
+		history.push(`/especialidades/${updatedRow}`)
   }
 
 	const fetchPatients = () => {
-		fetch('http://127.0.0.1:8000/api/specialties')
+		fetch('http://127.0.0.1:8000/api/especialidades')
 			.then((res) => res.json())
 			.then((data) => {
 				setData(data)
 			})
 	}
 	const deletePatient = async (id) => {
-		await fetch('http://127.0.0.1:8000/api/specialties/'+id,{
+		await fetch('http://127.0.0.1:8000/api/especialidades/'+id,{
 			method: 'DELETE'
 		}).then(() => fetchPatients())
 	}
@@ -39,7 +39,7 @@ export default function AppointmentsPage() {
 				<Button sx={{ marginTop: '10px' }} variant="contained">
 					<NavLink
 						style={{ textDecoration: 'none', color: 'white' }}
-						to={`/specialties/new`}
+						to={`/especialidades/new`}
 					>
 						Agregar Especialidad
 					</NavLink>
@@ -48,7 +48,7 @@ export default function AppointmentsPage() {
 					title={'Catalogo de Especialidades'}
 					columns={[
 						{ id: 'id', label: '# de Especialidad', minWidth: 50 },
-						{ id: 'name', label: 'Nombre', minWidth: 170 }
+						{ id: 'nombre', label: 'Nombre', minWidth: 170 }
 					]}
 					rows={data}					
 					actions

@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 const appointmentSlice = createSlice({
-	name: 'appointments',
+	name: 'citas',
 	initialState: {
-		appointments: [],
+		citas: [],
 		id: 0,
 	},
 	reducers: {
@@ -15,20 +15,20 @@ const appointmentSlice = createSlice({
 				id: newId,
 				...action.payload,
 			}
-			state.appointments = [...state.appointments, newAppointment]
+			state.citas = [...state.citas, newAppointment]
 		},
 		deleteAppointment: (state, action) => {
-			state.appointments = state.appointments.filter(
+			state.citas = state.citas.filter(
 				(appointment) => appointment.id !== action.payload
 			)
 		},
 		replaceAppointments: (state, action) => {
-			state.appointments = action.payload
+			state.citas = action.payload
 		},
 	},
 	// extraReducers: {
 	// 	[fetchAppointments.fulfilled]: (state, action) => {
-	// 		state.appointments = action.payload
+	// 		state.citas = action.payload
 	// 	},
 	// },
 })

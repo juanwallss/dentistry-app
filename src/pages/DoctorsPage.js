@@ -18,18 +18,18 @@ export default function DoctorsPage() {
 	const history = useHistory()
 	const [data, setData] = useState([])
 	const [modalInfo, setModalInfo] = useState({
-		specialties: []
+		especialidades: []
 	})
 	const [openModal, setOpenModal] = useState(false)
 	const handleDelete = (rowToDelete) => {
-		deleteDoctor(rowToDelete)
+		eliminarDoctor(rowToDelete)
   }
 
   const handleUpdate = (updatedRow) => {
-		history.push(`/doctors/${updatedRow}`)
+		history.push(`/doctores/${updatedRow}`)
   }
-	const deleteDoctor = async (id) => {
-		await fetch('http://127.0.0.1:8000/api/doctors/'+id,{
+	const eliminarDoctor = async (id) => {
+		await fetch('http://127.0.0.1:8000/api/doctores/'+id,{
 			method: 'DELETE'
 		}).then(() => fetchDoctors()).finally(() => {
 			Swal.fire({
@@ -40,7 +40,7 @@ export default function DoctorsPage() {
 		})
 	}
 	const fetchDoctors = () => {
-		fetch("http://127.0.0.1:8000/api/doctors").then(res => res.json())
+		fetch("http://127.0.0.1:8000/api/doctores").then(res => res.json())
 			.then(info => setData(info))
 			.catch(err => console.log(err))
 	}
@@ -54,7 +54,7 @@ export default function DoctorsPage() {
 				<Button sx={{ marginTop: '10px' }} variant="contained">
 					<NavLink
 						style={{ textDecoration: 'none', color: 'white' }}
-						to={`/doctors/new`}
+						to={`/doctores/new`}
 					>
 						Agregar Doctor
 					</NavLink>
@@ -63,13 +63,13 @@ export default function DoctorsPage() {
 					title={'Doctores'}
 					columns={[
 						{ id: 'id', label: 'ID', minWidth: 50 },
-						{ id: 'name', label: 'Nombre', minWidth: 170 },
+						{ id: 'nombre', label: 'Nombre', minWidth: 170 },
 						{
-							id: 'professional_id',
+							id: 'ced_prof',
 							label: 'Cédula Profesional',
 							minWidth: 170,
 						},
-						{ id: 'phone', label: 'Teléfono', minWidth: 170 },
+						{ id: 'telefono', label: 'Teléfono', minWidth: 170 },
 						{ id: 'email', label: 'Correo Electronico', minWidth: 170 },
 					]}
 					rows={data}
@@ -87,16 +87,16 @@ export default function DoctorsPage() {
 						<Card>
 							<CardContent>
 								<Typography id="modal-modal-title" variant="h5" component="h2">
-									{`Nombre ${modalInfo.name}`}
+									{`Nombre ${modalInfo.nombre}`}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-									Cedula Profesional: {modalInfo.professional_id}
+									Cedula Profesional: {modalInfo.ced_prof}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-									Especialidad: {modalInfo?.specialties.length > 0 ? modalInfo.specialties.map(s => `${s.name}, `) : `Sin especialidad`}
+									Especialidad: {modalInfo?.especialidades.length > 0 ? modalInfo.especialidades.map(s => `${s.nombre}, `) : `Sin especialidad`}
 								</Typography>
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
-									Telefono: {modalInfo.phone}
+									Telefono: {modalInfo.telefono}
 								</Typography>
 							</CardContent>
 							<CardActions>
@@ -104,7 +104,7 @@ export default function DoctorsPage() {
 									style={{ marginTop: '10px' }}
 									onClick={() => {
 										setOpenModal(false)
-										deleteDoctor(modalInfo.id)
+										eliminarDoctor(modalInfo.id)
 										Swal.fire({
 											title: 'Se elimino el doctor',
 											text: 'Se ha eliminado el doctor correctamente',
@@ -115,7 +115,7 @@ export default function DoctorsPage() {
 								>
 									Eliminar
 								</Button>
-								<NavLink to={`/doctors/${modalInfo.id}`}>
+								<NavLink to={`/doctores/${modalInfo.id}`}>
 								<Button
 									style={{ marginTop: '10px' }}
 									onClick={() => {

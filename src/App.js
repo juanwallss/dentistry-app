@@ -36,34 +36,34 @@ function App() {
 							<Route path="/calendar">
 								<CalendarPage />
 							</Route>
-							<Route exact path="/appointments">
+							<Route exact path="/citas">
 								<AppointmentsPage />
 							</Route>
-							<Route exact path="/patients">
+							<Route exact path="/pacientes">
 								<PatientPage />
 							</Route>
-							<Route exact path="/doctors">
+							<Route exact path="/doctores">
 								<DoctorsPage />
 							</Route>
-							<Route path="/doctors/:id">
+							<Route path="/doctores/:id">
 								<DoctorsIndividualPage />
 							</Route>
-							<Route path="/patients/:id">
+							<Route path="/pacientes/:id">
 								<PatientsIndividualPage />
 							</Route>
-							<Route path="/appointments/:id">
+							<Route path="/citas/:id">
 								<AppointmentsIndividualPage />
 							</Route>
-							<Route exact path="/specialties">
+							<Route exact path="/especialidades">
 								<SpecialtiesPage />
 							</Route>
-							<Route exact path="/treatments">
+							<Route exact path="/tratamientos">
 								<TreatmentsPage />
 							</Route>
-							<Route path="/treatments/:id">
+							<Route path="/tratamientos/:id">
 								<TreatmentsIndividualPage />
 							</Route>
-							<Route path="/specialties/:id">
+							<Route path="/especialidades/:id">
 								<SpecialtiesIndividualPage />
 							</Route>
 						</Switch>

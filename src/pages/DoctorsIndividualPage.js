@@ -12,16 +12,16 @@ export default function DoctorsIndividualPage(props) {
 	const history = useHistory()
   const { id } = useParams()
   const [currentItem, setCurrentItem] = useState({})
-  const [appointments, setAppointments] = useState([])
-  const [specialties, setSpecialties] = useState([])
+  const [citas, setAppointments] = useState([])
+  const [especialidades, setSpecialties] = useState([])
   const [specialty, setSpecialty] = useState([])
-  const [gender, setGender] = useState('')
+  const [genero, setGenero] = useState('')
 
   const addDoctor = async (item) => {
     console.log(item)
     if (id === 'new') {
       await axios
-        .post('http://127.0.0.1:8000/api/doctors',
+        .post('http://127.0.0.1:8000/api/doctores',
           item
         )
         .then(() => {
@@ -32,7 +32,7 @@ export default function DoctorsIndividualPage(props) {
         })
     } else {
       await axios
-        .put(`http://127.0.0.1:8000/api/doctors/${id}`,
+        .put(`http://127.0.0.1:8000/api/doctores/${id}`,
           item
         )
         .then(() => {
@@ -44,8 +44,8 @@ export default function DoctorsIndividualPage(props) {
     }
   }
 
-	const deleteDoctor = async (value) => {
-		await fetch('http://127.0.0.1:8000/api/doctors/'+value,{
+	const eliminarDoctor = async (value) => {
+		await fetch('http://127.0.0.1:8000/api/doctores/'+value,{
 			method: 'DELETE'
 		})
 	}
@@ -63,8 +63,8 @@ export default function DoctorsIndividualPage(props) {
 
   useEffect(() => {
     if (id !== 'new') {
-      axios.get(`http://127.0.0.1:8000/api/doctors/${id}`).then((res) => {
-        const spArr = res.data.specialties.map((s) => {
+      axios.get(`http://127.0.0.1:8000/api/doctores/${id}`).then((res) => {
+        const spArr = res.data.especialidades.map((s) => {
           return s.id
         })
         console.log(res.data)
@@ -72,15 +72,15 @@ export default function DoctorsIndividualPage(props) {
 					...res.data,
 					specialty: spArr
 				})
-        setGender(res.data.gender)
+        setGenero(res.data.genero)
         setSpecialty(spArr)
-        setAppointments(res.data.appointments)
+        setAppointments(res.data.citas)
       })
     }
   }, [id])
 
   const fetchSpecialties = () => {
-    fetch('http://127.0.0.1:8000/api/specialties')
+    fetch('http://127.0.0.1:8000/api/especialidades')
       .then((res) => res.json())
       .then((data) => {
         setSpecialties(data)
@@ -94,7 +94,7 @@ export default function DoctorsIndividualPage(props) {
     fetchSpecialties()
   }, [])
   const handleBlur = (id) => {
-    axios.get(`http://127.0.0.1:8000/api/doctors/${id}`).then((res) => {
+    axios.get(`http://127.0.0.1:8000/api/doctores/${id}`).then((res) => {
     	if(res.data.status === 404) {
     		Swal.fire({
     			title: `No se encontró registro con el id: ${id}. Desea crear nuevo?`,
@@ -103,13 +103,13 @@ export default function DoctorsIndividualPage(props) {
     			denyButtonText: `Cancelar`,
     		}).then((result) => {
     			if (result.isConfirmed) {
-    				history.push(`/doctors/new`)
+    				history.push(`/doctores/new`)
     				window.location.reload()
     	} else if (result.isDenied) {
     			 }
     		})
     	} else {
-    		history.push(`/doctors/${id}`)
+    		history.push(`/doctores/${id}`)
     		setCurrentItem(res.data)
     	}
     })
@@ -182,9 +182,9 @@ export default function DoctorsIndividualPage(props) {
                     variant='standard'
                     placeholder='Nombre'
                     focused
-                    value={currentItem?.name}
+                    value={currentItem?.nombre}
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, name: e.target.value })
+                      setCurrentItem({ ...currentItem, nombre: e.target.value })
                     }
                   />
                 </Grid>
@@ -197,13 +197,13 @@ export default function DoctorsIndividualPage(props) {
                     id='standard-required'
                     label='Primer Apellido'
                     variant='standard'
-                    value={currentItem?.father_lastname}
+                    value={currentItem?.apellido_paterno}
                     focused
                     placeholder='Primer Apellido'
                     onChange={(e) =>
                       setCurrentItem({
                         ...currentItem,
-                        father_lastname: e.target.value
+                        apellido_paterno: e.target.value
                       })
                     }
                   />
@@ -218,12 +218,12 @@ export default function DoctorsIndividualPage(props) {
                     label='Segundo Apellido'
                     variant='standard'
                     placeholder='Segundo Apellido'
-                    value={currentItem?.mother_lastname}
+                    value={currentItem?.apellido_materno}
                     focused
                     onChange={(e) =>
                       setCurrentItem({
                         ...currentItem,
-                        mother_lastname: e.target.value
+                        apellido_materno: e.target.value
                       })
                     }
                   />
@@ -245,10 +245,10 @@ export default function DoctorsIndividualPage(props) {
                     label='Teléfono'
                     variant='standard'
                     focused
-                    value={currentItem?.phone}
+                    value={currentItem?.telefono}
                     placeholder='Teléfono'
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, phone: e.target.value })
+                      setCurrentItem({ ...currentItem, telefono: e.target.value })
                     }
                   />
                 </Grid>
@@ -292,12 +292,12 @@ export default function DoctorsIndividualPage(props) {
                     onChange={handleChange}
                     sx={{ width: '25ch' }}
                   >
-                    {specialties.map((item) => (
+                    {especialidades.map((item) => (
                       <MenuItem
                         key={item.id}
                         value={item.id}
                       >
-                        {item.name}
+                        {item.nombre}
                       </MenuItem>
                     ))}
                   </Select>
@@ -316,11 +316,11 @@ export default function DoctorsIndividualPage(props) {
                       shrink: true
                     }}
                     variant='standard'
-                    value={currentItem?.professional_id}
+                    value={currentItem?.ced_prof}
                     onChange={(e) =>
                       setCurrentItem({
                         ...currentItem,
-                        professional_id: e.target.value
+                        ced_prof: e.target.value
                       })
                     }
                   />
@@ -333,14 +333,14 @@ export default function DoctorsIndividualPage(props) {
                   <Select
                     labelId='demo-simple-select-label'
                     id='demo-simple-select'
-                    value={gender}
+                    value={genero}
                     label='Genero'
                     onChange={(event) => {
                       setCurrentItem({
                         ...currentItem,
-                        gender: event.target.value
+                        genero: event.target.value
                       })
-                      setGender(event.target.value)
+                      setGenero(event.target.value)
                     }}
                     sx={{ width: '25ch' }}
                   >
@@ -368,7 +368,7 @@ export default function DoctorsIndividualPage(props) {
           >
             <NavLink
               style={{ textDecoration: 'none', color: 'white' }}
-              to={`/doctors`}
+              to={`/doctores`}
               onClick={() => {
                 addDoctor(currentItem)
                 Swal.fire({
@@ -387,9 +387,9 @@ export default function DoctorsIndividualPage(props) {
           >
             <NavLink
               style={{ textDecoration: 'none', color: 'white' }}
-              to={`/doctors`}
+              to={`/doctores`}
 							onClick={() => {
-								deleteDoctor(currentItem.id)
+								eliminarDoctor(currentItem.id)
 								Swal.fire({
 									title: 'Se elimino el doctor',
 									text: 'Se ha eliminado el doctor correctamente',
@@ -407,7 +407,7 @@ export default function DoctorsIndividualPage(props) {
           >
             <NavLink
               style={{ textDecoration: 'none', color: 'white' }}
-              to={`/doctors`}
+              to={`/doctores`}
               onClick={() => {
                 addDoctor(currentItem)
                 Swal.fire({
@@ -431,8 +431,8 @@ export default function DoctorsIndividualPage(props) {
             margin: '50px'
           }}
         >
-          {appointments.length > 0 && (<>
-            {appointments.map((a, index) => {
+          {citas.length > 0 && (<>
+            {citas.map((a, index) => {
               if (a.status !== 'CANCELADA') {
                 return (<div key={a.date}>
                   <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -440,8 +440,8 @@ export default function DoctorsIndividualPage(props) {
                     <h3>Estado: {a.status}</h3>
                   </div>
                   <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <p>Tratamiento: {a.treatments.name}</p>
-                    <p>Paciente: {a.patient.name + " " + a.patient.father_lastname}</p>
+                    <p>Tratamiento: {a.tratamientos.nombre}</p>
+                    <p>Paciente: {a.patient.nombre + " " + a.patient.apellido_paterno}</p>
                   </div>
                   <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     <Button
@@ -449,7 +449,7 @@ export default function DoctorsIndividualPage(props) {
                         variant='contained'
                         style={{ textDecoration: 'none', color: 'white' }}
                         onClick={() => {
-                          history.push(`/appointments/${a.id}`)
+                          history.push(`/citas/${a.id}`)
                         }}
                       >
                         Detalles de cita

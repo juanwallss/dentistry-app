@@ -17,19 +17,19 @@ function Navbar() {
     const nombre = path[0]
     let posi = ''
     switch (nombre) {
-      case 'doctors':
+      case 'doctores':
         posi = 'Mantenimiento de Doctores'
         break
-      case 'appointments':
+      case 'citas':
         posi = 'Mantenimiento de Citas'
         break
-      case 'patients':
+      case 'pacientes':
         posi = 'Catalogo de Pacientes'
         break
         case 'calendar':
           posi = 'Calendario'
           break
-          case 'specialties':
+          case 'especialidades':
             posi = 'Catalogo Especialidades'
             break
       default:

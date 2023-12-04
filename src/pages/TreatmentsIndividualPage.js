@@ -19,7 +19,7 @@ function TreatmentsIndividualPage() {
   const addTreatment = async (item) => {
     if (id === 'new') {
       await axios
-        .post('http://127.0.0.1:8000/api/treatments', 
+        .post('http://127.0.0.1:8000/api/tratamientos', 
           item
         )
         .then(() => {
@@ -30,7 +30,7 @@ function TreatmentsIndividualPage() {
         })
     } else {
       await axios
-        .put(`http://127.0.0.1:8000/api/treatments/${id}`, 
+        .put(`http://127.0.0.1:8000/api/tratamientos/${id}`, 
           item
         )
         .then(() => {
@@ -42,7 +42,7 @@ function TreatmentsIndividualPage() {
     }
   }
   const handleBlur = (id) => {
-    axios.get(`http://127.0.0.1:8000/api/treatments/${id}`).then((res) => {
+    axios.get(`http://127.0.0.1:8000/api/tratamientos/${id}`).then((res) => {
       if(res.data.status === 404) {
         Swal.fire({
           title: `No se encontró registro con el id: ${id}. Desea crear nuevo?`,
@@ -51,13 +51,13 @@ function TreatmentsIndividualPage() {
           denyButtonText: `Cancelar`,
         }).then((result) => {
           if (result.isConfirmed) {
-            history.push(`/treatments/new`)
+            history.push(`/tratamientos/new`)
             window.location.reload()
       } else if (result.isDenied) {
            }
         })
       } else {
-        history.push(`/treatments/${id}`)
+        history.push(`/tratamientos/${id}`)
         setCurrentItem(res.data)
       }
     })
@@ -65,7 +65,7 @@ function TreatmentsIndividualPage() {
 
   useEffect(() => {
     if (id !== 'new') {
-      axios.get(`http://127.0.0.1:8000/api/treatments/${id}`).then((res) => {
+      axios.get(`http://127.0.0.1:8000/api/tratamientos/${id}`).then((res) => {
         setCurrentItem({
           ...res.data
         })
@@ -132,9 +132,9 @@ function TreatmentsIndividualPage() {
                     variant='standard'
                     placeholder='Nombre'
                     focused
-                    value={currentItem?.name}
+                    value={currentItem?.nombre}
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, name: e.target.value })
+                      setCurrentItem({ ...currentItem, nombre: e.target.value })
                     }
                   />
                 </Grid>
@@ -149,9 +149,9 @@ function TreatmentsIndividualPage() {
                     variant='standard'
                     placeholder='Precio'
                     focused
-                    value={currentItem?.price}
+                    value={currentItem?.precio}
                     onChange={(e) =>
-                      setCurrentItem({ ...currentItem, price: e.target.value })
+                      setCurrentItem({ ...currentItem, precio: e.target.value })
                     }
                   />
                 </Grid>
@@ -164,13 +164,13 @@ function TreatmentsIndividualPage() {
                     id='standard-required'
                     label='Descripción'
                     variant='standard'
-                    value={currentItem?.description}
+                    value={currentItem?.descripcion}
                     focused
                     placeholder='Descripción'
                     onChange={(e) =>
                       setCurrentItem({
                         ...currentItem,
-                        description: e.target.value
+                        descripcion: e.target.value
                       })
                     }
                   />

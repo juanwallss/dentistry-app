@@ -10,7 +10,7 @@ export default function TreatmentsPage() {
 	const [data, setData] = useState([])
   
   const deleteTreatment = async (id) => {
-    await fetch('http://127.0.0.1:8000/api/treatments/'+id,{
+    await fetch('http://127.0.0.1:8000/api/tratamientos/'+id,{
       method: 'DELETE'
     }).then(() => fetchTreatments())
   }
@@ -19,7 +19,7 @@ export default function TreatmentsPage() {
   };
   
   const fetchTreatments = () => {
-    fetch('http://127.0.0.1:8000/api/treatments')
+    fetch('http://127.0.0.1:8000/api/tratamientos')
       .then((res) => res.json())
       .then((data) => {
         setData(data)
@@ -29,7 +29,7 @@ export default function TreatmentsPage() {
 		fetchTreatments()
 	}, [])
   const handleUpdate = (updatedRow) => {
-		history.push(`/treatments/${updatedRow}`)
+		history.push(`/tratamientos/${updatedRow}`)
   };
   return (
     <div>
@@ -37,7 +37,7 @@ export default function TreatmentsPage() {
 				<Button sx={{ marginTop: '10px' }} variant="contained">
 					<NavLink
 						style={{ textDecoration: 'none', color: 'white' }}
-						to={`/treatments/new`}
+						to={`/tratamientos/new`}
 					>
 						Agregar Tratamiento
 					</NavLink>
@@ -46,9 +46,9 @@ export default function TreatmentsPage() {
 					title={'Tratamientos'}
 					columns={[
 						{ id: 'id', label: '# de Folio', minWidth: 50 },
-						{ id: 'name', label: 'Nombre', minWidth: 170 },
-						{ id: 'price', label: 'Precio', minWidth: 170 },
-						{ id: 'description', label: 'Descripción', minWidth: 170 },
+						{ id: 'nombre', label: 'Nombre', minWidth: 170 },
+						{ id: 'precio', label: 'Precio', minWidth: 170 },
+						{ id: 'descripcion', label: 'Descripción', minWidth: 170 },
 					]}
 					rows={data}
 					actions

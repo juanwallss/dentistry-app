@@ -22,15 +22,15 @@ export default function CalendarPage() {
 	const [openModal, setOpenModal] = useState(false)
 	useEffect(() => {
 		fetch(
-			'http://127.0.0.1:8000/api/appointments'
+			'http://127.0.0.1:8000/api/citas'
 		)
 			.then((res) => res.json())
 			.then((info) => {
 				const response = info.map(ap => {
 					return {
 						...ap,
-						doctor_name: ap.doctor.name,
-						patient_name: ap.patient.name
+						doctor_name: ap.doctor.nombre,
+						patient_name: ap.patient.nombre
 					}
 				})
 				setEvents(Object.values(response))

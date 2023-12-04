@@ -4,28 +4,28 @@ import React, { useMemo, useEffect, useState } from 'react'
 import { Container } from '@mui/material'
 
 export default function HomePage() {
-	const [appointments, setAppointments] = useState([])
+	const [citas, setAppointments] = useState([])
 	const [options, setOptions] = useState([])
 
 	useEffect(() => {
 		fetch(
-			'http://127.0.0.1:8000/api/chart-appointments'
+			'http://127.0.0.1:8000/api/chart-citas'
 		)
 			.then((res) => res.json())
 			.then((info) => {
 				const response = info.map(ap => {
 					return {
 						...ap,
-						doctor_name: ap.doctor.name,
-						patient_name: ap.patient.name
+						doctor_name: ap.doctor.nombre,
+						patient_name: ap.patient.nombre
 					}
 				})
 				setAppointments(Object.values(response))
 			}).finally(() => {
-				if (appointments.length > 0) {
-					const pendingCount = appointments.filter(ap => ap.status === "AGENDADA")
-					const doneCount = appointments.filter(ap => ap.status === "REALIZADA")
-					const canceledCount = appointments.filter(ap => ap.status === "CANCELADA")
+				if (citas.length > 0) {
+					const pendingCount = citas.filter(ap => ap.status === "AGENDADA")
+					const doneCount = citas.filter(ap => ap.status === "REALIZADA")
+					const canceledCount = citas.filter(ap => ap.status === "CANCELADA")
 					setOptions([
 						{
 							chart: {
@@ -51,23 +51,23 @@ export default function HomePage() {
 								},
 							},
 							title: {
-								text: `Citas: ${appointments.length}.`,
+								text: `Citas: ${citas.length}.`,
 							},
 							series: [
 								{
 									data: [
 										{
-											name: `Agendadas: ${pendingCount.length}`,
+											nombre: `Agendadas: ${pendingCount.length}`,
 											y: pendingCount.length,
-											x: appointments,
+											x: citas,
 										},{
-											name: `Realizadas: ${doneCount.length}`,
+											nombre: `Realizadas: ${doneCount.length}`,
 											y: doneCount.length,
-											x: appointments,
+											x: citas,
 										},{
-											name: `Canceladas: ${canceledCount.length}`,
+											nombre: `Canceladas: ${canceledCount.length}`,
 											y: canceledCount.length,
-											x: appointments,
+											x: citas,
 										},
 									],
 									animation: false,
@@ -78,7 +78,7 @@ export default function HomePage() {
 					])
 				}
 			})
-	}, [appointments])
+	}, [citas])
 
 	
 	return (

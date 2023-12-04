@@ -32,45 +32,45 @@ export default function AppointmentsIndividualPage(props) {
   const { id } = useParams()
   const [currentItem, setCurrentItem] = useState({})
   const [patient, setPatient] = useState({})
-  const [patients, setPatients] = useState([])
+  const [pacientes, setPatients] = useState([])
   const [doctor, setDoctor] = useState({})
   const [treatment, setTreatment] = useState({})
-  const [treatments, setTreatments] = useState([])
-  const [doctors, setDoctors] = useState([])
-  const [isDeleted, setIsDeleted] = useState(false)
+  const [tratamientos, setTreatments] = useState([])
+  const [doctores, setDoctors] = useState([])
+  const [isEliminado, setIsEliminado] = useState(false)
   const [initialTimeArr, setInitialTimesArr] = useState([])
   const [initialTime, setInitialTime] = useState({})
   const [endTime, setEndTime] = useState({})
   const [endTimeArr, setEndTimeArr] = useState([])
 
   const fetchDoctors = () => {
-		return fetch('http://127.0.0.1:8000/api/doctors')
+		return fetch('http://127.0.0.1:8000/api/doctores')
 			.then((res) => res.json())
 	}
 	
 	const fetchPatients = () => {
-		return fetch('http://127.0.0.1:8000/api/patients')
+		return fetch('http://127.0.0.1:8000/api/pacientes')
 			.then((res) => res.json())
 	}
 	
 	const fetchTreatments = () => {
-		return fetch('http://127.0.0.1:8000/api/treatments')
+		return fetch('http://127.0.0.1:8000/api/tratamientos')
 			.then((res) => res.json())
 	}
 
   const fetchSchedules = () => {
-    return fetch('http://127.0.0.1:8000/api/schedules')
+    return fetch('http://127.0.0.1:8000/api/horas')
 			.then((res) => res.json())
   }
 	
 	useEffect(() => {
 		Promise.all([fetchDoctors(), fetchPatients(), fetchTreatments(), fetchSchedules()])
-			.then(([doctorsData, patientsData, treatmentsData, schedulesData]) => {
-				setDoctors(doctorsData)
-				setPatients(patientsData)
-				setTreatments(treatmentsData)
-        setInitialTimesArr(schedulesData)
-        setEndTimeArr(schedulesData)
+			.then(([doctoresData, pacientesData, tratamientosData, horasData]) => {
+				setDoctors(doctoresData)
+				setPatients(pacientesData)
+				setTreatments(tratamientosData)
+        setInitialTimesArr(horasData)
+        setEndTimeArr(horasData)
 			})
 			.catch((err) => console.log(err))
 	}, [])
@@ -78,11 +78,11 @@ export default function AppointmentsIndividualPage(props) {
   const addAppointment = async (item) => {
 		if (id === 'new') {
       await axios
-        .post('http://127.0.0.1:8000/api/appointments', 
+        .post('http://127.0.0.1:8000/api/citas', 
           item
         )
         .then(() => {
-          history.push(`/appointments/${id}`)
+          history.push(`/citas/${id}`)
     		  setCurrentItem(item)
           Swal.fire({
             title: 'Cita creada',
@@ -100,7 +100,7 @@ export default function AppointmentsIndividualPage(props) {
         })
     } else {
       await axios
-        .put(`http://127.0.0.1:8000/api/appointments/${id}`, 
+        .put(`http://127.0.0.1:8000/api/citas/${id}`, 
           item
         )
         .then(() => {
@@ -114,9 +114,9 @@ export default function AppointmentsIndividualPage(props) {
 
   const deleteAppointment = async (id) => {
     await axios
-    .delete(`http://127.0.0.1:8000/api/appointments/${id}
+    .delete(`http://127.0.0.1:8000/api/citas/${id}
     `).then(() => {
-      history.push(`/appointments/${id}`)
+      history.push(`/citas/${id}`)
       updateCurrentItem()
     })
   }
@@ -133,17 +133,17 @@ export default function AppointmentsIndividualPage(props) {
     setTreatment(id)
   }
   const updateCurrentItem = () => {
-    axios.get(`http://127.0.0.1:8000/api/appointments/${id}`).then((res) => {
+    axios.get(`http://127.0.0.1:8000/api/citas/${id}`).then((res) => {
       setCurrentItem(res.data)
       setDoctor(res.data.doctor_id)
-      setPatient(res.data.patient_id)
+      setPatient(res.data.paciente_id)
       setTreatment(res.data.treatment_id)
       setInitialTime(res.data.initial_time_id)
       setEndTime(res.data.end_time_id)
       if (res.data.status === 'CANCELADA') {
-        setIsDeleted(true)
+        setIsEliminado(true)
       } else {
-        setIsDeleted(false)
+        setIsEliminado(false)
       }
     })
   }
@@ -154,7 +154,7 @@ export default function AppointmentsIndividualPage(props) {
   }, [id])
 
   const handleBlur = (id) => {
-    axios.get(`http://127.0.0.1:8000/api/appointments/${id}`).then((res) => {
+    axios.get(`http://127.0.0.1:8000/api/citas/${id}`).then((res) => {
     	if(res.data.status === 404) {
     		Swal.fire({
     			title: `No se encontró registro con el id: ${id}. Desea crear nuevo?`,
@@ -163,13 +163,13 @@ export default function AppointmentsIndividualPage(props) {
     			denyButtonText: `Cancelar`,
     		}).then((result) => {
     			if (result.isConfirmed) {
-    				history.push(`/appointments/new`)
+    				history.push(`/citas/new`)
     				window.location.reload()
     	} else if (result.isDenied) {
     			 }
     		})
     	} else {
-    		history.push(`/appointments/${id}`)
+    		history.push(`/citas/${id}`)
     		setCurrentItem(res.data)
     	}
     })
@@ -188,7 +188,7 @@ export default function AppointmentsIndividualPage(props) {
       >
         <Container>
           {
-            isDeleted ? (<><h1>Cita Cancelada</h1></>) : (<>
+            isEliminado ? (<><h1>Cita Cancelada</h1></>) : (<>
             {id !== 'new' ? (
             <h1>Editar Cita</h1>
           ) : (
@@ -247,13 +247,13 @@ export default function AppointmentsIndividualPage(props) {
                     label='Id Paciente'
                     variant='standard'
                     placeholder='Id Paciente'
-                    disabled={isDeleted}
+                    disabled={isEliminado}
                     focused
-                    value={currentItem?.patient_id}
+                    value={currentItem?.paciente_id}
                     onChange={(e) =>
                       setCurrentItem({
                         ...currentItem,
-                        patient_id: e.target.value
+                        paciente_id: e.target.value
                       })
                     }
                     onBlur={(e) => {
@@ -265,7 +265,7 @@ export default function AppointmentsIndividualPage(props) {
                     id='standard-required'
                     label='Id Doctor'
                     variant='standard'
-                    disabled={isDeleted}
+                    disabled={isEliminado}
                     placeholder='Id Doctor'
                     focused
                     value={currentItem?.doctor_id}
@@ -285,7 +285,7 @@ export default function AppointmentsIndividualPage(props) {
                     label='Id Tratamiento'
                     variant='standard'
                     placeholder='Id Tratamiento'
-                    disabled={isDeleted}
+                    disabled={isEliminado}
                     focused
                     value={currentItem?.treatment_id}
                     onChange={(e) =>
@@ -307,7 +307,7 @@ export default function AppointmentsIndividualPage(props) {
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  {patients.length > 0 ? (
+                  {pacientes.length > 0 ? (
                     <div>
                       <InputLabel id='demo-simple-select-label'>
                         Paciente
@@ -317,22 +317,22 @@ export default function AppointmentsIndividualPage(props) {
                         id='demo-simple-select'
                         value={patient}
                         label='Paciente'
-                    disabled={isDeleted}
+                    disabled={isEliminado}
                     onChange={(event) => {
                           setCurrentItem({
                             ...currentItem,
-                            patient_id: event.target.value
+                            paciente_id: event.target.value
                           })
                           setPatient(event.target.value)
                         }}
                         sx={{ width: '25ch' }}
                       >
-                        {patients.map((item) => (
+                        {pacientes.map((item) => (
                           <MenuItem
                             key={item.id}
                             value={item.id}
                           >
-                            {item.name}
+                            {item.nombre}
                           </MenuItem>
                         ))}
                       </Select>
@@ -344,7 +344,7 @@ export default function AppointmentsIndividualPage(props) {
                       </CardContent>
                     </Card>
                   )}
-                  {doctors.length > 0 ? (
+                  {doctores.length > 0 ? (
                     <div>
                       <InputLabel id='demo-simple-select-label'>
                         Doctor
@@ -353,7 +353,7 @@ export default function AppointmentsIndividualPage(props) {
                         labelId='demo-simple-select-label'
                         id='demo-simple-select'
                         value={doctor}
-                    disabled={isDeleted}
+                    disabled={isEliminado}
                     label='Doctor'
                         onChange={(event) => {
                           setCurrentItem({
@@ -364,12 +364,12 @@ export default function AppointmentsIndividualPage(props) {
                         }}
                         sx={{ width: '25ch' }}
                       >
-                        {doctors.map((item) => (
+                        {doctores.map((item) => (
                           <MenuItem
                             key={item.id}
                             value={item.id}
                           >
-                            {item.name}
+                            {item.nombre}
                           </MenuItem>
                         ))}
                       </Select>
@@ -381,7 +381,7 @@ export default function AppointmentsIndividualPage(props) {
                       </CardContent>
                     </Card>
                   )}
-                  {treatments.length > 0 ? (
+                  {tratamientos.length > 0 ? (
                     <div>
                       <InputLabel id='demo-simple-select-label'>
                         Tratamiento
@@ -390,7 +390,7 @@ export default function AppointmentsIndividualPage(props) {
                         labelId='demo-simple-select-label'
                         id='demo-simple-select'
                         value={treatment}
-                    disabled={isDeleted}
+                    disabled={isEliminado}
                     label='Tratamiento'
                         onChange={(event) => {
                           setCurrentItem({
@@ -401,12 +401,12 @@ export default function AppointmentsIndividualPage(props) {
                         }}
                         sx={{ width: '25ch' }}
                       >
-                        {treatments.map((item) => (
+                        {tratamientos.map((item) => (
                           <MenuItem
                             key={item.id}
                             value={item.id}
                           >
-                            {item.name}
+                            {item.nombre}
                           </MenuItem>
                         ))}
                       </Select>
@@ -434,7 +434,7 @@ export default function AppointmentsIndividualPage(props) {
                       label=''
                       type='date'
 											value={currentItem?.date}
-                    disabled={isDeleted}
+                    disabled={isEliminado}
                     onChange={(e) =>
                         setCurrentItem({ ...currentItem, date: e.target.value })
                       }
@@ -455,7 +455,7 @@ export default function AppointmentsIndividualPage(props) {
                         value={initialTime}
                         MenuProps={MenuProps}
                         label='Hora de inicio'
-                        disabled={isDeleted}
+                        disabled={isEliminado}
                         onChange={(event) => {
                               setCurrentItem({
                                 ...currentItem,
@@ -490,7 +490,7 @@ export default function AppointmentsIndividualPage(props) {
                         value={endTime}
                         MenuProps={MenuProps}
                         label='Hora final'
-                        disabled={isDeleted}
+                        disabled={isEliminado}
                         onChange={(event) => {
                               setCurrentItem({
                                 ...currentItem,
