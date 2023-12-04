@@ -34,14 +34,25 @@ export default function AppointmentsIndividualPage(props) {
   const [patient, setPatient] = useState({})
   const [pacientes, setPatients] = useState([])
   const [doctor, setDoctor] = useState({})
-  const [treatment, setTreatment] = useState({})
-  const [tratamientos, setTreatments] = useState([])
+  const [treatment, setTreatment] = useState([])
+  const [tratamientos, setTratamientos] = useState([])
   const [doctores, setDoctors] = useState([])
   const [isEliminado, setIsEliminado] = useState(false)
   const [initialTimeArr, setInitialTimesArr] = useState([])
   const [initialTime, setInitialTime] = useState({})
   const [endTime, setEndTime] = useState({})
   const [endTimeArr, setEndTimeArr] = useState([])
+
+  const handleChange = (event) => {
+    const {
+      target: { value }
+    } = event
+    setTreatment(typeof value === 'string' ? value.split(',') : value)
+    setCurrentItem({
+      ...currentItem,
+      specialty: value
+    })
+  }
 
   const fetchDoctors = () => {
 		return fetch('http://127.0.0.1:8000/api/doctores')
@@ -68,7 +79,7 @@ export default function AppointmentsIndividualPage(props) {
 			.then(([doctoresData, pacientesData, tratamientosData, horasData]) => {
 				setDoctors(doctoresData)
 				setPatients(pacientesData)
-				setTreatments(tratamientosData)
+				setTratamientos(tratamientosData)
         setInitialTimesArr(horasData)
         setEndTimeArr(horasData)
 			})
@@ -137,14 +148,16 @@ export default function AppointmentsIndividualPage(props) {
       setCurrentItem(res.data)
       setDoctor(res.data.doctor_id)
       setPatient(res.data.paciente_id)
-      setTreatment(res.data.treatment_id)
       setInitialTime(res.data.initial_time_id)
       setEndTime(res.data.end_time_id)
+      const arr = res.data.tratamientos.map((t) => ({ id: t.id, nombre: t.nombre }));
+      setTratamientos(arr)
       if (res.data.status === 'CANCELADA') {
         setIsEliminado(true)
       } else {
         setIsEliminado(false)
       }
+      console.log(tratamientos)
     })
   }
 	useEffect(() => {
@@ -390,15 +403,10 @@ export default function AppointmentsIndividualPage(props) {
                         labelId='demo-simple-select-label'
                         id='demo-simple-select'
                         value={treatment}
-                    disabled={isEliminado}
-                    label='Tratamiento'
-                        onChange={(event) => {
-                          setCurrentItem({
-                            ...currentItem,
-                            treatment_id: event.target.value
-                          })
-                          setTreatment(event.target.value)
-                        }}
+                        multiple
+                        disabled={isEliminado}
+                        label='Tratamiento'
+                        onChange={handleChange}
                         sx={{ width: '25ch' }}
                       >
                         {tratamientos.map((item) => (

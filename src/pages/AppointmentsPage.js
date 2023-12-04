@@ -12,6 +12,7 @@ import {
 	CardContent,
 	CardActions,
 } from '@mui/material'
+import axios from 'axios'
 import { style } from '../theme/styles'
 export default function AppointmentsPage() {
 	const history = useHistory()
@@ -36,27 +37,39 @@ export default function AppointmentsPage() {
 			})
 	}
 
+	const handleArrive = async (rowId) => {
+		await axios
+			.put(`http://127.0.0.1:8000/api/citas/${rowId}`,
+				{
+					...data,
+					status: 'REALIZADA'
+				}
+			).then(() => {
+				fetchAppointments()
+			})
+	}
+
 	const handleDelete = (rowToDelete) => {
 		deleteAppointment(rowToDelete)
-  }
+	}
 
-  const handleUpdate = (updatedRow) => {
+	const handleUpdate = (updatedRow) => {
 		history.push(`/citas/${updatedRow}`)
-  }
+	}
 	const deleteAppointment = async (id) => {
-		await fetch('http://127.0.0.1:8000/api/citas/'+id,{
+		await fetch('http://127.0.0.1:8000/api/citas/' + id, {
 			method: 'DELETE'
 		}).then(() => fetchAppointments())
 	}
 	useEffect(() => {
 		fetchAppointments()
 	}, [])
-	
+
 	return (
 		<div>
 			<Container sx={{ marginTop: '20px ' }}>
 
-			<Button sx={{ marginTop: '10px' }} variant="contained">
+				<Button sx={{ marginTop: '10px' }} variant="contained">
 					<NavLink
 						style={{ textDecoration: 'none', color: 'white' }}
 						to={`/citas/new`}
@@ -76,6 +89,7 @@ export default function AppointmentsPage() {
 					]}
 					rows={data}
 					handleClick={(row) => {
+						console.log(row)
 						setModalInfo(row)
 						setOpenModal(true)
 					}}
@@ -101,8 +115,35 @@ export default function AppointmentsPage() {
 								<Typography id="modal-modal-description" sx={{ mt: 2 }}>
 									Fecha: {modalInfo.date}
 								</Typography>
+								<Typography>
+									Tratamientos:
+								</Typography>
+								<ul>
+									{modalInfo?.tratamientos?.length > 0 && (
+										modalInfo.tratamientos.map((i, index) => (
+											<li key={`${index}-${i.nombre}`}>
+												{i.nombre} - ${i.precio}
+											</li>
+										))
+									)}
+								</ul>
 							</CardContent>
 							<CardActions>
+								<Button
+									style={{ marginTop: '10px' }}
+									onClick={() => {
+										handleArrive(modalInfo.id)
+										setOpenModal(false)
+										Swal.fire({
+											title: 'Exito',
+											text: 'Cita realizada!',
+											icon: 'success',
+										})
+									}}
+									variant="outlined"
+								>
+									Paciente Llego
+								</Button>
 								<Button
 									color="success"
 									sx={{ marginTop: '10px' }}
@@ -113,12 +154,9 @@ export default function AppointmentsPage() {
 											(patient) => patient.id === patientId
 										)
 										window.open(
-											`https://wa.me/+521${patient.telefono}/?text=Hola,%20${
-												patient.patient_name.split(' ')[0]
-											}!,%20este%20es%20un%20recordatorio%20para%20tu%20cita%20con%20${
-												'el/la doctor:'
-											}%20${modalInfo.doctor_name}%20en%20la%20fecha%20${
-												modalInfo.date
+											`https://wa.me/+521${patient.telefono}/?text=Hola,%20${patient.patient_name.split(' ')[0]
+											}!,%20este%20es%20un%20recordatorio%20para%20tu%20cita%20con%20${'el/la doctor:'
+											}%20${modalInfo.doctor_name}%20en%20la%20fecha%20${modalInfo.date
 											}`
 										)
 									}}
